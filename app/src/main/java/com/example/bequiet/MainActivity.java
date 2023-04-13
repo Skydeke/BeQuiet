@@ -1,5 +1,10 @@
 package com.example.bequiet;
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -22,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+
+    private static final int ON_DO_NOT_DISTURB_CALLBACK_CODE = 123; // Replace with your desired value
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,4 +81,34 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    public void onClick(View view) {
+
+        try {
+            if (Build.VERSION.SDK_INT < 23) {
+                AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+            } else if(Build.VERSION.SDK_INT >= 23) {
+                this.requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp();
+            }
+        } catch (SecurityException e) {
+
+        }
+    }
+
+    private void requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp() {
+
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        // if user granted access else ask for permission
+        if (notificationManager.isNotificationPolicyAccessGranted()) {
+            AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        } else{
+            // Open Setting screen to ask for permisssion
+            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            startActivityForResult(intent, ON_DO_NOT_DISTURB_CALLBACK_CODE);
+
+        }
+    }
+
 }
