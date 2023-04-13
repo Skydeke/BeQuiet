@@ -1,5 +1,6 @@
 package com.example.bequiet;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
@@ -87,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             if (Build.VERSION.SDK_INT < 23) {
                 AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-                audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                int desiredVolume = 0; // Replace with your desired volume level
+                audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
             } else if(Build.VERSION.SDK_INT >= 23) {
                 this.requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp();
             }
@@ -102,13 +106,29 @@ public class MainActivity extends AppCompatActivity {
         // if user granted access else ask for permission
         if (notificationManager.isNotificationPolicyAccessGranted()) {
             AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-            audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+            int desiredVolume = 0; // Replace with your desired volume level
+            audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
         } else{
             // Open Setting screen to ask for permisssion
             Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            startActivityForResult(intent, ON_DO_NOT_DISTURB_CALLBACK_CODE);
+            mNotificationPolicyLauncher.launch(intent);
 
         }
     }
+
+    private ActivityResultLauncher<Intent> mNotificationPolicyLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Handle success, user granted permission
+                    // You can perform the desired action here
+                    AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+                    int desiredVolume = 0; // Replace with your desired volume level
+                    audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
+                } else {
+                    // Handle failure, user denied permission or cancelled
+                    // You can handle the failure scenario here
+                }
+            });
 
 }
