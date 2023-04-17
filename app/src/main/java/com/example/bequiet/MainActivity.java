@@ -14,21 +14,31 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.bequiet.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
+
+    private MapView map = null;
     private ActivityMainBinding binding;
 
     private static final int ON_DO_NOT_DISTURB_CALLBACK_CODE = 123; // Replace with your desired value
@@ -43,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +61,40 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Configuration.getInstance().load(MainActivity.this, PreferenceManager.getDefaultSharedPreferences(MainActivity.this));
+
+
+        map = (MapView) findViewById(R.id.mapview);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setMultiTouchControls(true);
+
+
+        CircleOverlay mCircleOverlay;
+        mCircleOverlay = new CircleOverlay(map.getContext(), 40, map.getProjection().metersToPixels(40, 47.8127457112777, 20), map.getProjection().metersToPixels(1, 47.8127457112777, 20), 47.8127457112777, 9.656508679012063);
+        map.getOverlayManager().add(mCircleOverlay);
+
+        map.addMapListener(new MapListener() {
+            @Override
+            public boolean onScroll(ScrollEvent event) {
+                return false;
+            }
+
+            @Override
+            public boolean onZoom(ZoomEvent event) {
+                mCircleOverlay.setReferenceScale(map.getProjection().metersToPixels(1, 47.8127457112777, map.getZoomLevel()));
+                Log.i("Meter", "" + mCircleOverlay.getRadiusInMeter()); //radius scales
+                return false;
+            }
+        });
+
+        Log.i("GeoCoordinate in rage", ""+CoordinateCalculator.isCoordinateInRange(new GeoPoint(map.getMapCenter().getLatitude(),map.getMapCenter().getLongitude()),mCircleOverlay.getRadiusInMeter(),new GeoPoint(47.8127457112777,9.656508679012063)));
+
+        IMapController mapController = map.getController();
+        mapController.setZoom(20);
+        mapController.setCenter(new GeoPoint(47.8127457112777, 9.656508679012063)); //geographic point of Hochschule Ravensbrug-Weingarten
+
+
     }
 
     @Override
@@ -78,21 +119,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
 
     public void onClick(View view) {
 
         try {
             if (Build.VERSION.SDK_INT < 23) {
-                AudioManager audioManager = (AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+                AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
                 int desiredVolume = 0; // Replace with your desired volume level
                 audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
-            } else if(Build.VERSION.SDK_INT >= 23) {
+            } else if (Build.VERSION.SDK_INT >= 23) {
                 this.requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp();
             }
         } catch (SecurityException e) {
@@ -108,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
             int desiredVolume = 0; // Replace with your desired volume level
             audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
-        } else{
+        } else {
             // Open Setting screen to ask for permisssion
             Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
             mNotificationPolicyLauncher.launch(intent);
@@ -130,5 +165,23 @@ public class MainActivity extends AppCompatActivity {
                     // You can handle the failure scenario here
                 }
             });
+
+    public void onResume() {
+        super.onResume();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
+    }
+
+    public void onPause() {
+        super.onPause();
+        //this will refresh the osmdroid configuration on resuming.
+        //if you make changes to the configuration, use
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Configuration.getInstance().save(this, prefs);
+        map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
+    }
 
 }
