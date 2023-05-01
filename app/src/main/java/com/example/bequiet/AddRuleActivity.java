@@ -19,12 +19,15 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
+import androidx.fragment.app.Fragment;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -37,13 +40,14 @@ import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 
-public class AddRuleActivity extends AppCompatActivity {
+public class AddRuleActivity extends AppCompatActivity implements WifiSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityAddRuleBinding binding;
 
     private static final int ON_DO_NOT_DISTURB_CALLBACK_CODE = 123; // Replace with your desired value
 
+    private String wifissid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +57,39 @@ public class AddRuleActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Spinner typesSpinner = (Spinner) findViewById(R.id.spinnerRuleTypes);
-        String[] types =  getResources().getStringArray(R.array.ruletypes);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, types);
+        String[] types = getResources().getStringArray(R.array.ruletypes);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
         typesSpinner.setAdapter(adapter);
+        typesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                switch (position) {
+                    case 0:
+                        SelectAreaFragment selectAreaFragment = new SelectAreaFragment();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainerView, selectAreaFragment)
+                                .commit();
+                        break;
+                    case 1:
+                        SelectWifiFragment selectWifiFragment = new SelectWifiFragment();
+                        selectWifiFragment.setWifiSelectedListener(AddRuleActivity.this);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainerView, selectWifiFragment)
+                                .commit();
+                        break;
+                }
 
-        Configuration.getInstance().load(AddRuleActivity.this, PreferenceManager.getDefaultSharedPreferences(AddRuleActivity.this));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        Configuration.getInstance().
+
+                load(AddRuleActivity.this, PreferenceManager.getDefaultSharedPreferences(AddRuleActivity.this));
     }
 
     @Override
@@ -129,4 +161,8 @@ public class AddRuleActivity extends AppCompatActivity {
                 }
             });
 
+    @Override
+    public void onWifiSelected(String ssid) {
+        this.wifissid = ssid;
+    }
 }
