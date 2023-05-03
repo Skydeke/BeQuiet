@@ -5,17 +5,22 @@ import android.os.Bundle;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityHomePageBinding;
+import com.example.bequiet.model.AppDatabase;
+import com.example.bequiet.model.AreaRule;
 import com.example.bequiet.model.Rule;
+import com.example.bequiet.model.WlanRule;
 import com.example.bequiet.presenter.HomePagePresenter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +53,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
                 startActivity(i);
             }
         });
-        homePagePresenter.updateRules(new ArrayList<>());
+        homePagePresenter.updateRules(new ArrayList<>(), HomePageActivity.this);
     }
 
     @Override
@@ -60,9 +65,9 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
 
     @Override
     public void setEmptyListTextShown(boolean shown) {
-        if (shown){
+        if (shown) {
             emptyListHint.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             emptyListHint.setVisibility(View.INVISIBLE);
         }
     }

@@ -12,6 +12,9 @@ import android.os.Bundle;
 import com.example.bequiet.GPSCoordinateSelectedListener;
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
+import com.example.bequiet.model.AppDatabase;
+import com.example.bequiet.model.AreaRule;
+import com.example.bequiet.model.WlanRule;
 import com.example.bequiet.view.SelectWifiFragment;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -21,9 +24,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 
 import androidx.navigation.ui.AppBarConfiguration;
+import androidx.room.Room;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +42,7 @@ import android.widget.TimePicker;
 import org.osmdroid.config.Configuration;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateSelectedListener, SelectWifiFragment.WifiSelectedListener {
 
@@ -204,7 +210,21 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
 
 
     public void onClick(View view) {
+        Thread thread = new Thread(() -> {
+            AppDatabase db = Room.databaseBuilder(view.getContext(),
+                    AppDatabase.class, "rules").build();
+            if (this.state == 0) {
+                db.ruleDAO().insertWlanRule(new WlanRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, this.wifissid));
+            } else {
+                db.ruleDAO().insertAreaRule(new AreaRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, 10, 0, 0));
+            }
+            Log.i("database", db.ruleDAO().loadAllAreaRules().toString());
 
+        });
+        thread.start();
+        final Intent i = new Intent(AddRuleActivity.this, HomePageActivity.class);
+        startActivity(i);
+        /*
         try {
             if (Build.VERSION.SDK_INT < 23) {
                 AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
@@ -216,6 +236,8 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
         } catch (SecurityException e) {
 
         }
+
+         */
     }
 
     private void requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp() {

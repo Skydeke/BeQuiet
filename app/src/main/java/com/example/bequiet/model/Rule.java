@@ -1,11 +1,22 @@
 package com.example.bequiet.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+@Entity(tableName = "Rule")
 public abstract class Rule {
-
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    @ColumnInfo(name = "ruleName")
     private String ruleName;
+    @ColumnInfo(name = "startHour")
     private int startHour;
+    @ColumnInfo(name = "startMinute")
     private int startMinute;
+
+    @ColumnInfo(name = "endHour")
     private int endHour;
+    @ColumnInfo(name = "endMinute")
     private int endMinute;
 
     private NoiseType reactionType = NoiseType.SILENT;
@@ -65,4 +76,12 @@ public abstract class Rule {
     public void setEndMinute(int endMinute) {
         this.endMinute = endMinute;
     }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

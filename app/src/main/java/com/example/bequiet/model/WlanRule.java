@@ -1,7 +1,11 @@
 package com.example.bequiet.model;
 
-public class WlanRule extends Rule{
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 
+@Entity
+public class WlanRule extends Rule{
+    @ColumnInfo(name = "wlanName")
     private String wlanName;
 
     public WlanRule(String ruleName, int startHour, int startMinute, int endHour, int endMinute, String wlanName) {

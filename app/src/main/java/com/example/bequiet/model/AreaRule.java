@@ -1,11 +1,17 @@
 package com.example.bequiet.model;
 
-import org.osmdroid.util.GeoPoint;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 
+import org.osmdroid.util.GeoPoint;
+@Entity
 public class AreaRule extends Rule {
 
+    @ColumnInfo(name = "radius")
     private float radius;
+    @ColumnInfo(name = "centerLongitude")
     private double centerLongitude;
+    @ColumnInfo(name = "centerLatitude")
     private double centerLatitude;
 
     public AreaRule(String ruleName, int startHour, int startMinute, int endHour, int endMinute, float radius, double centerLatitude, double centerLongitude) {
