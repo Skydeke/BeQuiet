@@ -35,12 +35,16 @@ public class SelectAreaFragment extends Fragment implements MapListener {
     private static final String KEY_LATITUDE = "LATITUDE";
     private static final String KEY_LONGITUDE = "LONGITUDE";
     private static final String KEY_ZOOM = "ZOOM";
+    private static final String KEY_RADIUS = "RADIUS";
+
     private static final String KEY_DISABLE_MOVEMENT = "DISABLE_MVMNT";
 
     private MapView map;
     private CircleOverlay mCircleOverlay;
     private double lat = 47.8127457112777;
     private double lon = 9.656508679012063;
+
+    private float radius = 40.0f;
     private int zoom = 20;
     private boolean disableControlls = false;
 
@@ -48,21 +52,23 @@ public class SelectAreaFragment extends Fragment implements MapListener {
         // Required empty public constructor
     }
 
-    public SelectAreaFragment(double lat, double longitude, int zoom, boolean disableControlls) {
+    public SelectAreaFragment(double lat, double longitude, float radius, int zoom, boolean disableControlls) {
         this.lat = lat;
         this.lon = longitude;
         this.disableControlls = disableControlls;
+        this.radius = radius;
         this.zoom = zoom;
     }
 
     private GPSCoordinateSelectedListener gpsCoordinateSelectedListener;
 
-    public static SelectAreaFragment newInstance(double lat, double longitude, int zoom, boolean disableControlls) {
+    public static SelectAreaFragment newInstance(double lat, double longitude, int radius, int zoom, boolean disableControlls) {
         SelectAreaFragment fragment = new SelectAreaFragment();
         Bundle args = new Bundle();
         args.putDouble(KEY_LATITUDE, lat);
         args.putDouble(KEY_LONGITUDE, longitude);
         args.putInt(KEY_ZOOM, zoom);
+        args.putFloat(KEY_RADIUS, radius);
         args.putBoolean(KEY_DISABLE_MOVEMENT, disableControlls);
         fragment.setArguments(args);
         return fragment;
@@ -75,6 +81,7 @@ public class SelectAreaFragment extends Fragment implements MapListener {
             lat = getArguments().getDouble(KEY_LATITUDE);
             lon = getArguments().getDouble(KEY_LONGITUDE);
             zoom = getArguments().getInt(KEY_ZOOM);
+            radius = getArguments().getFloat(KEY_RADIUS);
             disableControlls = getArguments().getBoolean(KEY_DISABLE_MOVEMENT);
         }
     }
@@ -100,7 +107,7 @@ public class SelectAreaFragment extends Fragment implements MapListener {
 
         mCircleOverlay = new CircleOverlay(
                 map.getContext(),
-                40, map.getProjection().metersToPixels(40, lat, zoom),
+                radius, map.getProjection().metersToPixels(radius, lat, zoom),
                 map.getProjection().metersToPixels(1, lat, zoom),
                 lat,
                 lon);
@@ -145,7 +152,7 @@ public class SelectAreaFragment extends Fragment implements MapListener {
     public boolean onScroll(ScrollEvent event) {
         IGeoPoint center = map.getMapCenter();
         if (this.gpsCoordinateSelectedListener != null)
-            this.gpsCoordinateSelectedListener.onGPSCoordinateSelected(center.getLatitude(), center.getLongitude());
+            this.gpsCoordinateSelectedListener.onGPSCoordinateSelected(center.getLatitude(), center.getLongitude(), (int) mCircleOverlay.getRadiusInMeter(), map.getZoomLevel());
         return false;
     }
 

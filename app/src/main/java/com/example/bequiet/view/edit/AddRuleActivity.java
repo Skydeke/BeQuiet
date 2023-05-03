@@ -66,6 +66,9 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
     private double lat = -1000;
     private double lon = -1000;
 
+    private float radius = 40;
+
+    private int zoom = 20;
 
     private int state = 0; //0 = GPS, 1 = WIFI
 
@@ -220,13 +223,13 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
             AppDatabase db = Room.databaseBuilder(view.getContext(),
                     AppDatabase.class, "rules").build();
             if (this.state == 0) {
-                db.ruleDAO().insertAreaRule(new AreaRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, 10, lat, lon));
+                db.ruleDAO().insertAreaRule(new AreaRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, radius, lat, lon, zoom));
             } else {
                 db.ruleDAO().insertWlanRule(new WlanRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, this.wifissid));
 
             }
             Log.i("database", db.ruleDAO().loadAllAreaRules().toString());
-
+            db.close();
         });
         thread.start();
         finish();
@@ -284,9 +287,11 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
     }
 
     @Override
-    public void onGPSCoordinateSelected(double lat, double lon) {
+    public void onGPSCoordinateSelected(double lat, double lon, float radius, int zoom) {
         this.lat = lat;
         this.lon = lon;
+        this.radius = radius;
+        this.zoom = zoom;
         changeButtonState();
     }
 
@@ -314,6 +319,5 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
         }
         return true;
     }
-
 
 }

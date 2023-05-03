@@ -89,7 +89,8 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
                 SelectAreaFragment selectAreaFragment = new SelectAreaFragment(
                         r.getCenterLatitude(),
                         r.getCenterLongitude(),
-                        19,
+                        r.getRadius(),
+                        r.getZoom() - 1,
                         true);
                 viewHolder.setFrag(selectAreaFragment);
                 localFrags.put(position, selectAreaFragment);
@@ -103,8 +104,10 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
                 SelectAreaFragment selectAreaFragment = new SelectAreaFragment(
                         r.getCenterLatitude(),
                         r.getCenterLongitude(),
-                        19,
+                        r.getRadius(),
+                        r.getZoom() - 1,
                         true);
+                viewHolder.setFrag(selectAreaFragment);
                 viewHolder.setFrag(selectAreaFragment);
                 localFrags.put(position, selectAreaFragment);
             }

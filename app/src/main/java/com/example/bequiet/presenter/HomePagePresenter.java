@@ -37,6 +37,7 @@ public class HomePagePresenter {
             } else {
                 viewInterface.setEmptyListTextShown(false);
             }
+            db.close();
             Log.i("database", db.ruleDAO().loadAllAreaRules().toString());
             viewInterface.updateRules(rules);
         });
