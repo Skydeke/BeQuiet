@@ -26,6 +26,9 @@
     <string name="silence">Stumm schalten</string>
     <string name="only_vibrate">Nur Vibrieren</string>
     <string name="full_noise">Ton an</string>
+    <string name="wlan_rule">%1$s - WLAN-Regel</string>
+    <string name="area_rule">%1$s - Area-Regel</string>
+    <string name="time_string">%1$s:%2$s</string>
     <array name="ruletypes">
         <item>Area-Regel</item>
         <item>WLAN-Regel</item>

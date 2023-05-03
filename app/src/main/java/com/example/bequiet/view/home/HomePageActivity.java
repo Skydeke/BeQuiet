@@ -1,4 +1,4 @@
-package com.example.bequiet.view;
+package com.example.bequiet.view.home;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import com.example.bequiet.model.AreaRule;
 import com.example.bequiet.model.Rule;
 import com.example.bequiet.model.WlanRule;
 import com.example.bequiet.presenter.HomePagePresenter;
+import com.example.bequiet.view.edit.AddRuleActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;

@@ -12,9 +12,6 @@ import android.os.Bundle;
 import com.example.bequiet.GPSCoordinateSelectedListener;
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
-import com.example.bequiet.model.AppDatabase;
-import com.example.bequiet.model.AreaRule;
-import com.example.bequiet.model.WlanRule;
 import com.example.bequiet.view.SelectWifiFragment;
 
 import androidx.activity.result.ActivityResultLauncher;
