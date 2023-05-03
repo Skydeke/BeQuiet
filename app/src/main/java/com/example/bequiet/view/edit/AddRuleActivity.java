@@ -216,9 +216,10 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
             AppDatabase db = Room.databaseBuilder(view.getContext(),
                     AppDatabase.class, "rules").build();
             if (this.state == 0) {
-                db.ruleDAO().insertWlanRule(new WlanRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, this.wifissid));
-            } else {
                 db.ruleDAO().insertAreaRule(new AreaRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, 10, 0, 0));
+            } else {
+                db.ruleDAO().insertWlanRule(new WlanRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, this.wifissid));
+
             }
             Log.i("database", db.ruleDAO().loadAllAreaRules().toString());
 
