@@ -1,5 +1,5 @@
 package com.example.bequiet.view;
 
 public interface GPSCoordinateSelectedListener {
-    public void onGPSCoordinateSelected();
+    public void onGPSCoordinateSelected(double lat, double lon);
 }

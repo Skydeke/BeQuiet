@@ -63,6 +63,10 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
 
     private String wifissid = "";
 
+    private double lat = -1000;
+    private double lon = -1000;
+
+
     private int state = 0; //0 = GPS, 1 = WIFI
 
     private Button btnSaveRule;
@@ -216,7 +220,7 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
             AppDatabase db = Room.databaseBuilder(view.getContext(),
                     AppDatabase.class, "rules").build();
             if (this.state == 0) {
-                db.ruleDAO().insertAreaRule(new AreaRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, 10, 0, 0));
+                db.ruleDAO().insertAreaRule(new AreaRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, 10, lat, lon));
             } else {
                 db.ruleDAO().insertWlanRule(new WlanRule(this.ruleName, this.startHour, this.startMinute, this.endHour, this.endMinute, this.wifissid));
 
@@ -281,7 +285,9 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
     }
 
     @Override
-    public void onGPSCoordinateSelected() {
+    public void onGPSCoordinateSelected(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
         changeButtonState();
     }
 
@@ -302,7 +308,8 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
         if (endMinute == -1) return false;
 
         if (state == 0) {
-            //TODO add GPSCoordinate validation
+            if (lat == -1000) return false;
+            if (lon == -1000) return false;
         } else {
             if (wifissid.equals("")) return false;
         }

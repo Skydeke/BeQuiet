@@ -16,6 +16,7 @@ import com.example.bequiet.R;
 import com.example.bequiet.view.CircleOverlay;
 import com.example.bequiet.view.GPSCoordinateSelectedListener;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
@@ -29,7 +30,7 @@ import org.osmdroid.views.MapView;
  * Use the {@link SelectAreaFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SelectAreaFragment extends Fragment implements MapListener{
+public class SelectAreaFragment extends Fragment implements MapListener {
 
     private static final String KEY_LATITUDE = "LATITUDE";
     private static final String KEY_LONGITUDE = "LONGITUDE";
@@ -129,6 +130,9 @@ public class SelectAreaFragment extends Fragment implements MapListener{
 
     @Override
     public boolean onScroll(ScrollEvent event) {
+        IGeoPoint center = map.getMapCenter();
+        if (this.gpsCoordinateSelectedListener != null)
+            this.gpsCoordinateSelectedListener.onGPSCoordinateSelected(center.getLatitude(), center.getLongitude());
         return false;
     }
 
