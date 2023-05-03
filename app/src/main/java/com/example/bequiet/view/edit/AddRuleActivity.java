@@ -229,8 +229,7 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
 
         });
         thread.start();
-        final Intent i = new Intent(AddRuleActivity.this, HomePageActivity.class);
-        startActivity(i);
+        finish();
         /*
         try {
             if (Build.VERSION.SDK_INT < 23) {

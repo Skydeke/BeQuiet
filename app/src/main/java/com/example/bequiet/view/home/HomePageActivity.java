@@ -12,6 +12,7 @@ import com.example.bequiet.model.WlanRule;
 import com.example.bequiet.presenter.HomePagePresenter;
 import com.example.bequiet.view.edit.AddRuleActivity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -65,9 +66,23 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
 
     @Override
     public void updateRules(List<Rule> r) {
-        adapter = new RulesAdapter(r);
-        rulesList.setAdapter(adapter);
-        rulesList.setLayoutManager(new LinearLayoutManager(this));
+        this.runOnUiThread(() -> {
+            adapter = new RulesAdapter(r);
+            rulesList.setAdapter(adapter);
+            rulesList.setLayoutManager(new LinearLayoutManager(HomePageActivity.this));
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        homePagePresenter.updateRules(new ArrayList<>(), getApplicationContext());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        homePagePresenter.updateRules(new ArrayList<>(), getApplicationContext());
     }
 
     @Override
