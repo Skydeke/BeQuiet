@@ -8,7 +8,7 @@ public class AreaRule extends Rule {
     private double centerLongitude;
     private double centerLatitude;
 
-    public AreaRule(String ruleName, int startHour, int startMinute, int endHour, int endMinute, float radius, double centerLongitude, double centerLatitude) {
+    public AreaRule(String ruleName, int startHour, int startMinute, int endHour, int endMinute, float radius, double centerLatitude, double centerLongitude) {
         super(ruleName, startHour, startMinute, endHour, endMinute);
         this.radius = radius;
         this.centerLongitude = centerLongitude;

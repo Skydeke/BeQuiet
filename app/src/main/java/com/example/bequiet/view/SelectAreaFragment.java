@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,6 +21,7 @@ import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
@@ -32,6 +34,10 @@ public class SelectAreaFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     private MapView map = null;
+    private double lat = 47.8127457112777;
+    private double lon = 9.656508679012063;
+    private int zoom = 20;
+    private boolean disableControlls = false;
 
     public SelectAreaFragment() {
         // Required empty public constructor
@@ -39,9 +45,13 @@ public class SelectAreaFragment extends Fragment {
 
     private GPSCoordinateSelectedListener gpsCoordinateSelectedListener;
 
-    public static SelectAreaFragment newInstance() {
+    public static SelectAreaFragment newInstance(double lat, double longitude, int zoom, boolean disableControlls) {
         SelectAreaFragment fragment = new SelectAreaFragment();
         Bundle args = new Bundle();
+        args.putDouble("lat", lat);
+        args.putDouble("lon", longitude);
+        args.putInt("zoom", zoom);
+        args.putBoolean("disableControlls", disableControlls);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,6 +59,12 @@ public class SelectAreaFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            lat = getArguments().getDouble("lat");
+            lon = getArguments().getDouble("lon");
+            zoom = getArguments().getInt("zoom");
+            disableControlls = getArguments().getBoolean("disableControlls");
+        }
     }
 
     @Override
@@ -62,11 +78,20 @@ public class SelectAreaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         map = (MapView) view.findViewById(R.id.mapview);
         map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setMultiTouchControls(true);
+        map.setMultiTouchControls(!disableControlls);
+
+        if (disableControlls) {
+            map.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
+        }
 
 
         CircleOverlay mCircleOverlay;
-        mCircleOverlay = new CircleOverlay(map.getContext(), 40, map.getProjection().metersToPixels(40, 47.8127457112777, 20), map.getProjection().metersToPixels(1, 47.8127457112777, 20), 47.8127457112777, 9.656508679012063);
+        mCircleOverlay = new CircleOverlay(map.getContext(), 40, map.getProjection().metersToPixels(40, lat, zoom), map.getProjection().metersToPixels(1, lat, zoom), lat, lon);
         map.getOverlayManager().add(mCircleOverlay);
 
         map.addMapListener(new MapListener() {
@@ -77,17 +102,18 @@ public class SelectAreaFragment extends Fragment {
 
             @Override
             public boolean onZoom(ZoomEvent event) {
-                mCircleOverlay.setReferenceScale(map.getProjection().metersToPixels(1, 47.8127457112777, map.getZoomLevel()));
+                mCircleOverlay.setReferenceScale(map.getProjection().metersToPixels(1, lat, map.getZoomLevel()));
                 Log.i("Meter", "" + mCircleOverlay.getRadiusInMeter()); //radius scales
                 return false;
             }
         });
 
-        Log.i("GeoCoordinate in rage", "" + CoordinateCalculator.isCoordinateInRange(new GeoPoint(map.getMapCenter().getLatitude(), map.getMapCenter().getLongitude()), mCircleOverlay.getRadiusInMeter(), new GeoPoint(47.8127457112777, 9.656508679012063)));
+        Log.i("GeoCoordinate in rage", "" + CoordinateCalculator.isCoordinateInRange(new GeoPoint(map.getMapCenter().getLatitude(), map.getMapCenter().getLongitude()), mCircleOverlay.getRadiusInMeter(), new GeoPoint(lat, lon)));
 
+        Log.i("FragmentInit", " Lat " + lat + " Long:" + lon);
         IMapController mapController = map.getController();
-        mapController.setZoom(20);
-        mapController.setCenter(new GeoPoint(47.8127457112777, 9.656508679012063)); //geographic point of Hochschule Ravensbrug-Weingarten
+        mapController.setZoom(zoom);
+        mapController.setCenter(new GeoPoint(lat, lon)); //geographic point of Hochschule Ravensbrug-Weingarten
         super.onViewCreated(view, savedInstanceState);
     }
 

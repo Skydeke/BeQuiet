@@ -19,7 +19,7 @@ public class HomePagePresenter {
         rules.add(new WlanRule("Name1Ru", 7, 30, 10, 30, "LanName"));
         rules.add(new WlanRule("Name2Ru", 7, 30, 15, 50, "2LanName"));
         rules.add(new AreaRule("Rav", 7, 30, 15, 50, 10, 47.8127457112777, 9.656508679012063));
-        rules.add(new AreaRule("NoIdea", 7, 30, 15, 50, 20, 46.8127457112777, 8.656508679012063));
+        rules.add(new AreaRule("Greenwitch", 7, 30, 15, 50, 20, 46.8127457112777, 8.656508679012063));
         if (rules.size() == 0){
             viewInterface.setEmptyListTextShown(true);
         }else {

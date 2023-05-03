@@ -1,10 +1,7 @@
 package com.example.bequiet.view;
 
 
-import static com.example.bequiet.model.NoiseType.SILENT;
-
-import android.app.Activity;
-import android.app.FragmentManager;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +10,11 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bequiet.R;
@@ -22,11 +22,14 @@ import com.example.bequiet.model.AreaRule;
 import com.example.bequiet.model.Rule;
 import com.example.bequiet.model.WlanRule;
 
+import org.osmdroid.config.Configuration;
+
 import java.util.List;
 
 public class RulesAdapter extends RecyclerView.Adapter<RulesAdapter.ViewHolder> {
 
     private final List<Rule> localDataSet;
+    private final FragmentManager manager;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -48,17 +51,14 @@ public class RulesAdapter extends RecyclerView.Adapter<RulesAdapter.ViewHolder> 
             // Define click listener for the ViewHolder's View
             this.view = view;
 
+            fragmentRule = (FragmentContainerView) view.findViewById(R.id.fragmentRule);
+            fragmentRule.setId(View.generateViewId());
             textViewRuleTitle = (TextView) view.findViewById(R.id.textViewRuleTitle);
             textViewStart = (TextView) view.findViewById(R.id.textViewStartTime);
             textViewEnd = (TextView) view.findViewById(R.id.textViewEndTime);
             radioButtonSilence = (RadioButton) view.findViewById(R.id.radioButtonSilence);
             radioButtonVibrate = (RadioButton) view.findViewById(R.id.radioButtonVibrate);
             radioButtonNoise = (RadioButton) view.findViewById(R.id.radioButtonFullVolume);
-            fragmentRule = (FragmentContainerView) view.findViewById(R.id.fragmentRule);
-        }
-
-        public View getView() {
-            return view;
         }
 
         public FragmentContainerView getFragmentRule() {
@@ -90,8 +90,9 @@ public class RulesAdapter extends RecyclerView.Adapter<RulesAdapter.ViewHolder> 
         }
     }
 
-    public RulesAdapter(List<Rule> dataSet) {
+    public RulesAdapter(List<Rule> dataSet, FragmentManager manager) {
         localDataSet = dataSet;
+        this.manager = manager;
     }
 
     // Create new views (invoked by the layout manager)
@@ -113,7 +114,14 @@ public class RulesAdapter extends RecyclerView.Adapter<RulesAdapter.ViewHolder> 
         if (rule instanceof WlanRule) {
             viewHolder.getTextViewRuleTitle().setText(rule.getRuleName() + " - WLAN-Regel");
         } else if (rule instanceof AreaRule) {
+            AreaRule r = (AreaRule) rule;
             viewHolder.getTextViewRuleTitle().setText(rule.getRuleName() + " - Area-Regel");
+            Configuration.getInstance().load(viewHolder.view.getContext(), PreferenceManager.getDefaultSharedPreferences(viewHolder.view.getContext()));
+            SelectAreaFragment selectAreaFragment = SelectAreaFragment.newInstance(r.getCenterLatitude(), r.getCenterLongitude(), 19, true);
+            manager.beginTransaction()
+                    .replace(viewHolder.getFragmentRule().getId(), selectAreaFragment)
+                    .commit();
+
         }
 
         viewHolder.getTextViewStart().setText(rule.getStartHour() + ":" + rule.getStartMinute());
