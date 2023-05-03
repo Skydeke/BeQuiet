@@ -10,7 +10,7 @@ import java.util.List;
 @Dao
 public interface RuleDAO {
 
-    @Query("SELECT * FROM WLANRULE,AreaRule")
+    @Query("SELECT * FROM WLANRULE")
     public List<WlanRule> loadAllWlanRules();
 
     @Query("SELECT * FROM AreaRule")
