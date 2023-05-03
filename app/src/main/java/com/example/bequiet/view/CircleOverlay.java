@@ -1,4 +1,4 @@
-package com.example.bequiet;
+package com.example.bequiet.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

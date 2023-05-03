@@ -1,4 +1,4 @@
-package com.example.bequiet;
+package com.example.bequiet.view;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -9,7 +9,10 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.example.bequiet.GPSCoordinateSelectedListener;
+import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
+import com.example.bequiet.view.SelectWifiFragment;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -35,7 +38,7 @@ import org.osmdroid.config.Configuration;
 
 import java.util.Calendar;
 
-public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateSelectedListener, WifiSelectedListener {
+public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateSelectedListener, SelectWifiFragment.WifiSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityAddRuleBinding binding;

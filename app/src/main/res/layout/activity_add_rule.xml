@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddRuleActivity">
+    tools:context=".view.AddRuleActivity">
 
 
     <Button
@@ -43,6 +43,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
+        android:name="com.example.bequiet.view.SelectAreaFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
@@ -66,9 +67,8 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/start_date_hint"
-        android:inputType="time"
+        android:inputType="date"
         android:minHeight="48dp"
-        android:onClick="onStartDateClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextRulename" />
@@ -82,9 +82,8 @@
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:hint="@string/end_date_hint"
-        android:inputType="time"
+        android:inputType="date"
         android:minHeight="48dp"
-        android:onClick="onEndDateClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

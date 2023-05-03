@@ -1,4 +1,4 @@
-package com.example.bequiet;
+package com.example.bequiet.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +20,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.example.bequiet.R;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,5 +105,9 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
 
         view.setBackgroundColor(Color.parseColor("#cc0066"));
 
+    }
+
+    public interface WifiSelectedListener {
+        public void onWifiSelected(String name);
     }
 }

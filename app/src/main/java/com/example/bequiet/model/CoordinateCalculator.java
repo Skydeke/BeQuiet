@@ -1,4 +1,4 @@
-package com.example.bequiet;
+package com.example.bequiet.model;
 
 import org.osmdroid.util.GeoPoint;
 

@@ -1,4 +1,4 @@
-package com.example.bequiet;
+package com.example.bequiet.view;
 
 import android.os.Bundle;
 
@@ -10,6 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.bequiet.GPSCoordinateSelectedListener;
+import com.example.bequiet.model.CoordinateCalculator;
+import com.example.bequiet.R;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapListener;
@@ -27,8 +31,6 @@ import org.osmdroid.views.MapView;
 public class SelectAreaFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
-    private static final String ARG_PARAM1 = "param1";
-    private String mParam1;
     private MapView map = null;
 
     public SelectAreaFragment() {
@@ -37,18 +39,9 @@ public class SelectAreaFragment extends Fragment {
 
     private GPSCoordinateSelectedListener gpsCoordinateSelectedListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment SelectAreaFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SelectAreaFragment newInstance(String param1) {
+    public static SelectAreaFragment newInstance() {
         SelectAreaFragment fragment = new SelectAreaFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,9 +49,6 @@ public class SelectAreaFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
     }
 
     @Override
