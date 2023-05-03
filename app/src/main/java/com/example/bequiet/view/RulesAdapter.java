@@ -112,7 +112,12 @@ public class RulesAdapter extends RecyclerView.Adapter<RulesAdapter.ViewHolder> 
         Rule rule = localDataSet.get(position);
 
         if (rule instanceof WlanRule) {
+            WlanRule r = (WlanRule) rule;
             viewHolder.getTextViewRuleTitle().setText(rule.getRuleName() + " - WLAN-Regel");
+            WlanRuleFragment wlanRuleFragment = WlanRuleFragment.newInstance(r.getWlanName());
+            manager.beginTransaction()
+                    .replace(viewHolder.getFragmentRule().getId(), wlanRuleFragment)
+                    .commit();
         } else if (rule instanceof AreaRule) {
             AreaRule r = (AreaRule) rule;
             viewHolder.getTextViewRuleTitle().setText(rule.getRuleName() + " - Area-Regel");

@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.bequiet.GPSCoordinateSelectedListener;
 import com.example.bequiet.model.CoordinateCalculator;
 import com.example.bequiet.R;
 
@@ -21,7 +20,6 @@ import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.BoundingBox;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 

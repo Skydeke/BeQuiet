@@ -9,10 +9,8 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.bequiet.GPSCoordinateSelectedListener;
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
-import com.example.bequiet.view.SelectWifiFragment;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
