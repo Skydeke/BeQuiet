@@ -24,7 +24,7 @@
         android:theme="@style/Theme.BeQuiet"
         tools:targetApi="31">
         <activity
-            android:name=".view.HomePageActivity"
+            android:name=".view.home.HomePageActivity"
             android:exported="true"
             android:label="@string/title_activity_home_page"
             android:theme="@style/Theme.BeQuiet">
@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.AddRuleActivity"
+            android:name=".view.edit.AddRuleActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.BeQuiet">

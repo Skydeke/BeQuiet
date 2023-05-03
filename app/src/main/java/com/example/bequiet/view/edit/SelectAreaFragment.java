@@ -1,4 +1,4 @@
-package com.example.bequiet.view;
+package com.example.bequiet.view.edit;
 
 import android.os.Bundle;
 
@@ -8,12 +8,13 @@ import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bequiet.model.CoordinateCalculator;
 import com.example.bequiet.R;
+import com.example.bequiet.view.CircleOverlay;
+import com.example.bequiet.view.GPSCoordinateSelectedListener;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.events.MapListener;
@@ -28,10 +29,15 @@ import org.osmdroid.views.MapView;
  * Use the {@link SelectAreaFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SelectAreaFragment extends Fragment {
+public class SelectAreaFragment extends Fragment implements MapListener{
 
-    // TODO: Rename parameter arguments, choose names that match
-    private MapView map = null;
+    private static final String KEY_LATITUDE = "LATITUDE";
+    private static final String KEY_LONGITUDE = "LONGITUDE";
+    private static final String KEY_ZOOM = "ZOOM";
+    private static final String KEY_DISABLE_MOVEMENT = "DISABLE_MVMNT";
+
+    private MapView map;
+    private CircleOverlay mCircleOverlay;
     private double lat = 47.8127457112777;
     private double lon = 9.656508679012063;
     private int zoom = 20;
@@ -46,10 +52,10 @@ public class SelectAreaFragment extends Fragment {
     public static SelectAreaFragment newInstance(double lat, double longitude, int zoom, boolean disableControlls) {
         SelectAreaFragment fragment = new SelectAreaFragment();
         Bundle args = new Bundle();
-        args.putDouble("lat", lat);
-        args.putDouble("lon", longitude);
-        args.putInt("zoom", zoom);
-        args.putBoolean("disableControlls", disableControlls);
+        args.putDouble(KEY_LATITUDE, lat);
+        args.putDouble(KEY_LONGITUDE, longitude);
+        args.putInt(KEY_ZOOM, zoom);
+        args.putBoolean(KEY_DISABLE_MOVEMENT, disableControlls);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,10 +64,10 @@ public class SelectAreaFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            lat = getArguments().getDouble("lat");
-            lon = getArguments().getDouble("lon");
-            zoom = getArguments().getInt("zoom");
-            disableControlls = getArguments().getBoolean("disableControlls");
+            lat = getArguments().getDouble(KEY_LATITUDE);
+            lon = getArguments().getDouble(KEY_LONGITUDE);
+            zoom = getArguments().getInt(KEY_ZOOM);
+            disableControlls = getArguments().getBoolean(KEY_DISABLE_MOVEMENT);
         }
     }
 
@@ -79,36 +85,28 @@ public class SelectAreaFragment extends Fragment {
         map.setMultiTouchControls(!disableControlls);
 
         if (disableControlls) {
-            map.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return true;
-                }
-            });
+            // Disable all touch interaction
+            map.setOnTouchListener((v, event) -> true);
         }
 
 
-        CircleOverlay mCircleOverlay;
-        mCircleOverlay = new CircleOverlay(map.getContext(), 40, map.getProjection().metersToPixels(40, lat, zoom), map.getProjection().metersToPixels(1, lat, zoom), lat, lon);
+        mCircleOverlay = new CircleOverlay(
+                map.getContext(),
+                40, map.getProjection().metersToPixels(40, lat, zoom),
+                map.getProjection().metersToPixels(1, lat, zoom),
+                lat,
+                lon);
         map.getOverlayManager().add(mCircleOverlay);
+        map.addMapListener(this);
 
-        map.addMapListener(new MapListener() {
-            @Override
-            public boolean onScroll(ScrollEvent event) {
-                return false;
-            }
+        Log.i("GeoCoordinate in rage", "" +
+                CoordinateCalculator.isCoordinateInRange(
+                        new GeoPoint(
+                                map.getMapCenter().getLatitude(),
+                                map.getMapCenter().getLongitude()),
+                        mCircleOverlay.getRadiusInMeter(),
+                        new GeoPoint(lat, lon)));
 
-            @Override
-            public boolean onZoom(ZoomEvent event) {
-                mCircleOverlay.setReferenceScale(map.getProjection().metersToPixels(1, lat, map.getZoomLevel()));
-                Log.i("Meter", "" + mCircleOverlay.getRadiusInMeter()); //radius scales
-                return false;
-            }
-        });
-
-        Log.i("GeoCoordinate in rage", "" + CoordinateCalculator.isCoordinateInRange(new GeoPoint(map.getMapCenter().getLatitude(), map.getMapCenter().getLongitude()), mCircleOverlay.getRadiusInMeter(), new GeoPoint(lat, lon)));
-
-        Log.i("FragmentInit", " Lat " + lat + " Long:" + lon);
         IMapController mapController = map.getController();
         mapController.setZoom(zoom);
         mapController.setCenter(new GeoPoint(lat, lon)); //geographic point of Hochschule Ravensbrug-Weingarten
@@ -117,24 +115,28 @@ public class SelectAreaFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         map.onResume(); //needed for compass, my location overlays, v6.0.0 and up
     }
 
     public void onPause() {
         super.onPause();
-        //this will refresh the osmdroid configuration on resuming.
-        //if you make changes to the configuration, use
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
     public void setGpsCoordinateSelectedListener(GPSCoordinateSelectedListener gpsCoordinateSelectedListener) {
         this.gpsCoordinateSelectedListener = gpsCoordinateSelectedListener;
+    }
+
+    @Override
+    public boolean onScroll(ScrollEvent event) {
+        return false;
+    }
+
+    @Override
+    public boolean onZoom(ZoomEvent event) {
+        mCircleOverlay.setReferenceScale(map.getProjection().metersToPixels(1, lat, map.getZoomLevel()));
+        Log.i("Meter", "" + mCircleOverlay.getRadiusInMeter()); //radius scales
+        return false;
     }
 }
 

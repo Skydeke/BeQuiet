@@ -1,6 +1,5 @@
-package com.example.bequiet.view;
+package com.example.bequiet.view.home;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,8 +21,7 @@ import com.example.bequiet.R;
  */
 public class WlanRuleFragment extends Fragment {
 
-    private TextView textViewName;
-    private ImageView imageViewWlan;
+    private static final String WLAN_NAME_KEY = "NAME";
 
     private String name;
 
@@ -41,7 +39,7 @@ public class WlanRuleFragment extends Fragment {
     public static WlanRuleFragment newInstance(String wlanName) {
         WlanRuleFragment fragment = new WlanRuleFragment();
         Bundle args = new Bundle();
-        args.putString("name", wlanName);
+        args.putString(WLAN_NAME_KEY, wlanName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,7 +48,7 @@ public class WlanRuleFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null){
-            name = getArguments().getString("name");
+            name = getArguments().getString(WLAN_NAME_KEY);
         }
     }
 
@@ -63,10 +61,10 @@ public class WlanRuleFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        textViewName = view.findViewById(R.id.textViewWlanName);
+        TextView textViewName = view.findViewById(R.id.textViewWlanName);
         textViewName.setText(name);
-        imageViewWlan = view.findViewById(R.id.imageViewWlan);
-        imageViewWlan.setImageDrawable(getResources().getDrawable(R.mipmap.ic_wlan_foreground));
+        ImageView imageViewWlan = view.findViewById(R.id.imageViewWlan);
+        imageViewWlan.setImageResource(R.mipmap.ic_wlan_foreground);
         super.onViewCreated(view, savedInstanceState);
     }
 

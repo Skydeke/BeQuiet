@@ -3,7 +3,6 @@ package com.example.bequiet.presenter;
 import com.example.bequiet.model.AreaRule;
 import com.example.bequiet.model.Rule;
 import com.example.bequiet.model.WlanRule;
-import com.example.bequiet.view.HomePageActivity;
 
 import java.util.List;
 

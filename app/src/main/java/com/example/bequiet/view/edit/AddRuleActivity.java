@@ -1,4 +1,4 @@
-package com.example.bequiet.view;
+package com.example.bequiet.view.edit;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
+import com.example.bequiet.view.GPSCoordinateSelectedListener;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;

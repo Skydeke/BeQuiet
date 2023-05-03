@@ -1,4 +1,4 @@
-package com.example.bequiet.view;
+package com.example.bequiet.view.edit;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +24,7 @@ import android.widget.ListView;
 import com.example.bequiet.R;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -78,8 +79,8 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     private List<ScanResult> getAvailableWifiNetworks() {
-        WifiManager wifiManager = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED
+        WifiManager wifiManager = (WifiManager) requireContext().getSystemService(Context.WIFI_SERVICE);
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //get permission for Wifi-Access
             ActivityCompat.requestPermissions((Activity) getContext(), new String[]{android.Manifest.permission.ACCESS_WIFI_STATE, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
@@ -104,7 +105,6 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
         }
 
         view.setBackgroundColor(Color.parseColor("#cc0066"));
-
     }
 
     public interface WifiSelectedListener {

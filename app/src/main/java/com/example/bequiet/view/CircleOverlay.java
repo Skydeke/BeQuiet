@@ -46,10 +46,7 @@ public class CircleOverlay extends Overlay {
 
         // Convert latitude and longitude to pixel coordinates on the map
         Point point = mapView.getProjection().toPixels(mapView.getMapCenter(), null); //keep the point in the center
-
-
         // Calculate the radius in pixels based on the map's scale factor
-
         // Draw the circle on the canvas
         canvas.drawCircle(point.x, point.y, radiusPx, this.paint);
     }
