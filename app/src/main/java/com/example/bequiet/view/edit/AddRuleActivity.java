@@ -1,4 +1,4 @@
-package com.example.bequiet.view;
+package com.example.bequiet.view.edit;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -9,10 +9,15 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.bequiet.GPSCoordinateSelectedListener;
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
-import com.example.bequiet.view.SelectWifiFragment;
+import com.example.bequiet.model.AppDatabase;
+import com.example.bequiet.model.AreaRule;
+import com.example.bequiet.model.WlanRule;
+import com.example.bequiet.view.GPSCoordinateSelectedListener;
+import com.example.bequiet.view.edit.SelectAreaFragment;
+import com.example.bequiet.view.edit.SelectWifiFragment;
+import com.example.bequiet.view.home.HomePageActivity;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;

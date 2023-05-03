@@ -10,6 +10,7 @@ import com.example.bequiet.model.AreaRule;
 import com.example.bequiet.model.Rule;
 import com.example.bequiet.model.WlanRule;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class HomePagePresenter {
@@ -26,8 +27,10 @@ public class HomePagePresenter {
             AppDatabase db = Room.databaseBuilder(context,
                     AppDatabase.class, "rules").build();
 
-            List<WlanRule> wlanRules = db.ruleDAO().loadAllWlanRules();
-            List<AreaRule> areaRules = db.ruleDAO().loadAllAreaRules();
+            List<WlanRule> wlanRules = new LinkedList<>();
+            List<AreaRule> areaRules = new LinkedList<>();
+            // List<WlanRule> wlanRules = db.ruleDAO().loadAllWlanRules();
+            //List<AreaRule> areaRules = db.ruleDAO().loadAllAreaRules();
             for (WlanRule wlanRule : wlanRules) {
                 rules.add(wlanRule);
             }
