@@ -35,6 +35,8 @@ public class SelectAreaFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private GPSCoordinateSelectedListener gpsCoordinateSelectedListener;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -91,7 +93,7 @@ public class SelectAreaFragment extends Fragment {
             }
         });
 
-        Log.i("GeoCoordinate in rage", ""+CoordinateCalculator.isCoordinateInRange(new GeoPoint(map.getMapCenter().getLatitude(),map.getMapCenter().getLongitude()),mCircleOverlay.getRadiusInMeter(),new GeoPoint(47.8127457112777,9.656508679012063)));
+        Log.i("GeoCoordinate in rage", "" + CoordinateCalculator.isCoordinateInRange(new GeoPoint(map.getMapCenter().getLatitude(), map.getMapCenter().getLongitude()), mCircleOverlay.getRadiusInMeter(), new GeoPoint(47.8127457112777, 9.656508679012063)));
 
         IMapController mapController = map.getController();
         mapController.setZoom(20);
@@ -116,4 +118,9 @@ public class SelectAreaFragment extends Fragment {
         //Configuration.getInstance().save(this, prefs);
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
+
+    public void setGpsCoordinateSelectedListener(GPSCoordinateSelectedListener gpsCoordinateSelectedListener) {
+        this.gpsCoordinateSelectedListener = gpsCoordinateSelectedListener;
+    }
 }
+

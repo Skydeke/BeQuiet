@@ -2,6 +2,7 @@ package com.example.bequiet;
 
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -9,45 +10,52 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
-import androidx.fragment.app.Fragment;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
-import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.events.MapListener;
-import org.osmdroid.events.ScrollEvent;
-import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 
-public class AddRuleActivity extends AppCompatActivity implements WifiSelectedListener {
+public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateSelectedListener, WifiSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityAddRuleBinding binding;
 
     private static final int ON_DO_NOT_DISTURB_CALLBACK_CODE = 123; // Replace with your desired value
 
-    private String wifissid;
+
+    private String ruleName = "";
+
+    private int startHour = -1;
+    private int endHour = -1;
+    private int startMinute = -1;
+    private int endMinute = -1;
+
+    private String wifissid = "";
+
+    private int state = 0; //0 = GPS, 1 = WIFI
+
+    private Button btnSaveRule;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +68,85 @@ public class AddRuleActivity extends AppCompatActivity implements WifiSelectedLi
         String[] types = getResources().getStringArray(R.array.ruletypes);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
         typesSpinner.setAdapter(adapter);
+
+        EditText editTextRulename = findViewById(R.id.editTextRulename);
+        editTextRulename.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                ruleName = s.toString();
+                changeButtonState();
+            }
+        });
+
+        EditText editTextStartDate = findViewById(R.id.editTextStartDate);
+        editTextStartDate.setShowSoftInputOnFocus(false);
+        editTextStartDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    final Calendar calendar = Calendar.getInstance();
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            editTextStartDate.setText(hourOfDay + ":" + minute);
+                            startHour = hourOfDay;
+                            startMinute = minute;
+                            editTextStartDate.clearFocus();
+                            changeButtonState();
+                        }
+                    }, hour, minute, true);
+                    timePickerDialog.show();
+                }
+            }
+        });
+
+        EditText editTextEndDate = findViewById(R.id.editTextEndDate);
+        editTextEndDate.setShowSoftInputOnFocus(false);
+        editTextEndDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    final Calendar calendar = Calendar.getInstance();
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            editTextEndDate.setText(hourOfDay + ":" + minute);
+                            endHour = hourOfDay;
+                            endMinute = minute;
+                            editTextEndDate.clearFocus();
+                            changeButtonState();
+                        }
+                    }, hour, minute, true);
+                    timePickerDialog.show();
+                }
+            }
+        });
         typesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 switch (position) {
                     case 0:
+                        state = 0;
                         SelectAreaFragment selectAreaFragment = new SelectAreaFragment();
+                        selectAreaFragment.setGpsCoordinateSelectedListener(AddRuleActivity.this);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainerView, selectAreaFragment)
                                 .commit();
                         break;
                     case 1:
+                        state = 1;
                         SelectWifiFragment selectWifiFragment = new SelectWifiFragment();
                         selectWifiFragment.setWifiSelectedListener(AddRuleActivity.this);
                         getSupportFragmentManager().beginTransaction()
@@ -90,6 +166,15 @@ public class AddRuleActivity extends AppCompatActivity implements WifiSelectedLi
         Configuration.getInstance().
 
                 load(AddRuleActivity.this, PreferenceManager.getDefaultSharedPreferences(AddRuleActivity.this));
+
+        this.btnSaveRule = findViewById(R.id.btnSaveRule);
+        this.btnSaveRule.setEnabled(false);
+
+        SelectAreaFragment selectAreaFragment = new SelectAreaFragment();
+        selectAreaFragment.setGpsCoordinateSelectedListener(AddRuleActivity.this);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView, selectAreaFragment)
+                .commit();
     }
 
     @Override
@@ -164,5 +249,37 @@ public class AddRuleActivity extends AppCompatActivity implements WifiSelectedLi
     @Override
     public void onWifiSelected(String ssid) {
         this.wifissid = ssid;
+        changeButtonState();
     }
+
+    @Override
+    public void onGPSCoordinateSelected() {
+        changeButtonState();
+    }
+
+    private void changeButtonState() {
+        if (!insertedAllValues()) {
+            btnSaveRule.setEnabled(false);
+
+        } else {
+            btnSaveRule.setEnabled(true);
+        }
+    }
+
+    private boolean insertedAllValues() {
+        if (ruleName.equals("")) return false;
+        if (startHour == -1) return false;
+        if (startMinute == -1) return false;
+        if (endHour == -1) return false;
+        if (endMinute == -1) return false;
+
+        if (state == 0) {
+            //TODO add GPSCoordinate validation
+        } else {
+            if (wifissid.equals("")) return false;
+        }
+        return true;
+    }
+
+
 }

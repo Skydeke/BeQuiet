@@ -52,8 +52,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="save_rule_text">Save</string>
     <string name="rule_name_hint">Regelname</string>
-    <string name="start_date_hint">Startdatum:</string>
-    <string name="end_date_hint">Enddatum:</string>
+    <string name="start_date_hint">Startzeit:</string>
+    <string name="end_date_hint">Endzeit:</string>
     <string name="localisation_method">Lokalisationsart auswählen:</string>
     <string name="no_rules_created">Es wurden noch keine Regeln erstellt. Versuch es mit dem + unten Rechts!</string>
     <array name="ruletypes">
