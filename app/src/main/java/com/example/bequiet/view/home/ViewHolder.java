@@ -1,7 +1,6 @@
 package com.example.bequiet.view.home;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -9,7 +8,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bequiet.R;
@@ -27,16 +25,14 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     private final RadioButton radioButtonVibrate;
     private final RadioButton radioButtonNoise;
     private final FrameLayout fragmentRule;
-    private final FragmentManager fragmentManager;
     private final View view;
     private final Context context;
-    private int dataPos;
+    private int dataPos = -1;
 
-    public ViewHolder(View view, FragmentManager fragmentManager, Context context) {
+    public ViewHolder(View view, Context context) {
         super(view);
         // Define click listener for the ViewHolder's View
         this.view = view;
-        this.fragmentManager = fragmentManager;
         this.context = context;
 
         fragmentRule = (FrameLayout) view.findViewById(R.id.fragmentRule);

@@ -131,6 +131,12 @@ public class SelectAreaFragment extends Fragment implements MapListener {
         map.onPause();  //needed for compass, my location overlays, v6.0.0 and up
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        map.onDetach(); // Broadcastlisteners in Library need to be unregistered otherwise they crash the app.
+    }
+
     public void setGpsCoordinateSelectedListener(GPSCoordinateSelectedListener gpsCoordinateSelectedListener) {
         this.gpsCoordinateSelectedListener = gpsCoordinateSelectedListener;
     }
