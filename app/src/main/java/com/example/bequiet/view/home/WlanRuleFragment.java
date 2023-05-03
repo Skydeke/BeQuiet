@@ -29,6 +29,10 @@ public class WlanRuleFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public WlanRuleFragment(String name) {
+        this.name = name;
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.

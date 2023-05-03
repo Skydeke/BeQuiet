@@ -1,6 +1,7 @@
 package com.example.bequiet.view.home;
 
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -10,8 +11,11 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bequiet.R;
@@ -22,25 +26,28 @@ import com.example.bequiet.view.edit.SelectAreaFragment;
 
 import org.osmdroid.config.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private final List<Rule> localDataSet;
-    private final FragmentManager manager;
 
-    public RulesAdapter(List<Rule> dataSet, FragmentManager manager) {
+    public RulesAdapter(List<Rule> dataSet) {
         localDataSet = dataSet;
-        this.manager = manager;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        Context context = viewGroup.getContext();
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         // Create a new view, which defines the UI of the list item
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.rule_row_item, viewGroup, false);
-        return new ViewHolder(view);
+        View view = inflater.inflate(R.layout.rule_row_item, viewGroup, false);
+
+        // Add the Fragment to the View using a FragmentManager
+        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+        return new ViewHolder(view, fragmentManager, context);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -50,15 +57,14 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
         // contents of the view with that element
         Rule rule = localDataSet.get(position);
         Resources res = viewHolder.getView().getResources();
+        viewHolder.setDataPos(position);
 
         if (rule instanceof WlanRule) {
             WlanRule r = (WlanRule) rule;
             String text = String.format(res.getString(R.string.wlan_rule), r.getRuleName());
             viewHolder.getTextViewRuleTitle().setText(text);
-            WlanRuleFragment wlanRuleFragment = WlanRuleFragment.newInstance(r.getWlanName());
-            manager.beginTransaction()
-                    .replace(viewHolder.getFragmentRule().getId(), wlanRuleFragment)
-                    .commit();
+            WlanRuleFragment wlanRuleFragment = new WlanRuleFragment(r.getWlanName());
+            viewHolder.setFrag(wlanRuleFragment);
         } else if (rule instanceof AreaRule) {
             AreaRule r = (AreaRule) rule;
             String text = String.format(res.getString(R.string.area_rule), r.getRuleName());
@@ -66,14 +72,12 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
             Configuration.getInstance().load(
                     viewHolder.getView().getContext(),
                     PreferenceManager.getDefaultSharedPreferences(viewHolder.getView().getContext()));
-            SelectAreaFragment selectAreaFragment = SelectAreaFragment.newInstance(
+            SelectAreaFragment selectAreaFragment = new SelectAreaFragment(
                     r.getCenterLatitude(),
                     r.getCenterLongitude(),
                     19,
                     true);
-            manager.beginTransaction()
-                    .replace(viewHolder.getFragmentRule().getId(), selectAreaFragment)
-                    .commit();
+            viewHolder.setFrag(selectAreaFragment);
         }
 
         String startHour = getLeadingZeroString(rule.getStartHour());

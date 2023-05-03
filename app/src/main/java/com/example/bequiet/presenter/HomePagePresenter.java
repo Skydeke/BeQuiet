@@ -27,16 +27,10 @@ public class HomePagePresenter {
             AppDatabase db = Room.databaseBuilder(context,
                     AppDatabase.class, "rules").build();
 
-            //List<WlanRule> wlanRules = new LinkedList<>();
-            //List<AreaRule> areaRules = new LinkedList<>();
             List<WlanRule> wlanRules = db.ruleDAO().loadAllWlanRules();
             List<AreaRule> areaRules = db.ruleDAO().loadAllAreaRules();
-            for (WlanRule wlanRule : wlanRules) {
-                rules.add(wlanRule);
-            }
-            for (AreaRule areaRule : areaRules) {
-                rules.add(areaRule);
-            }
+            rules.addAll(wlanRules);
+            rules.addAll(areaRules);
 
             if (rules.size() == 0) {
                 viewInterface.setEmptyListTextShown(true);

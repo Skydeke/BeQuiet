@@ -48,6 +48,13 @@ public class SelectAreaFragment extends Fragment implements MapListener {
         // Required empty public constructor
     }
 
+    public SelectAreaFragment(double lat, double longitude, int zoom, boolean disableControlls) {
+        this.lat = lat;
+        this.lon = longitude;
+        this.disableControlls = disableControlls;
+        this.zoom = zoom;
+    }
+
     private GPSCoordinateSelectedListener gpsCoordinateSelectedListener;
 
     public static SelectAreaFragment newInstance(double lat, double longitude, int zoom, boolean disableControlls) {

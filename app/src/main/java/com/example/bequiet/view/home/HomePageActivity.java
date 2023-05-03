@@ -34,14 +34,17 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
 
     private RecyclerView rulesList;
 
+    private RulesAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homePagePresenter = new HomePagePresenter(this);
         binding = ActivityHomePageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
+
+
 
         emptyListHint = findViewById(R.id.textViewNoRulesCreated);
         rulesList = findViewById(R.id.rulesList);
@@ -53,12 +56,16 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
                 startActivity(i);
             }
         });
-        homePagePresenter.updateRules(new ArrayList<>(), HomePageActivity.this);
+        ArrayList<Rule> rules = new ArrayList<>();
+        homePagePresenter.updateRules(rules, HomePageActivity.this);
+        adapter = new RulesAdapter(rules);
+        rulesList.setAdapter(adapter);
+        rulesList.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     public void updateRules(List<Rule> r) {
-        RulesAdapter adapter = new RulesAdapter(r, getSupportFragmentManager());
+        adapter = new RulesAdapter(r);
         rulesList.setAdapter(adapter);
         rulesList.setLayoutManager(new LinearLayoutManager(this));
     }
