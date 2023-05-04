@@ -32,11 +32,7 @@ public class HomePagePresenter {
             rules.addAll(wlanRules);
             rules.addAll(areaRules);
 
-            if (rules.size() == 0) {
-                viewInterface.setEmptyListTextShown(true);
-            } else {
-                viewInterface.setEmptyListTextShown(false);
-            }
+            viewInterface.setEmptyListTextShown(rules.size() == 0);
             db.close();
             Log.i("database", db.ruleDAO().loadAllAreaRules().toString());
             viewInterface.updateRules(rules);

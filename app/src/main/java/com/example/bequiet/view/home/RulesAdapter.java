@@ -4,6 +4,7 @@ package com.example.bequiet.view.home;
 import android.content.Context;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +28,15 @@ import com.example.bequiet.view.edit.SelectAreaFragment;
 import org.osmdroid.config.Configuration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-    private final List<Rule> localDataSet;
+    private List<Rule> localDataSet;
     private HashMap<Integer, Fragment> localFrags;
 
     public RulesAdapter(List<Rule> dataSet) {
@@ -53,6 +57,22 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
         return new ViewHolder(view, context);
     }
 
+    public void clearFragments(){
+        for (Iterator<Integer> iterator = localFrags.keySet().iterator(); iterator.hasNext();) {
+            Integer position = iterator.next();
+            localFrags.get(position).onDetach();
+            localFrags.get(position).onDestroy();
+            iterator.remove();
+        }
+        Log.i("CLEARED", "Frags: " + localFrags.keySet().size());
+    }
+
+    public void setLocalDataSet(List<Rule> dataSet){
+        this.localDataSet.clear();
+        this.localDataSet.addAll(dataSet);
+//        this.notifyDataSetChanged();
+    }
+
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
@@ -66,51 +86,34 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
             WlanRule r = (WlanRule) rule;
             String text = String.format(res.getString(R.string.wlan_rule), r.getRuleName());
             viewHolder.getTextViewRuleTitle().setText(text);
-            if (localFrags.get(position) == null){
-                WlanRuleFragment wlanRuleFragment = new WlanRuleFragment(r.getWlanName());
-                viewHolder.setFrag(wlanRuleFragment);
-                localFrags.put(position, wlanRuleFragment);
-            }else {
-                localFrags.get(position).onDetach();
-                localFrags.get(position).onDestroy();
+            if (localFrags.get(position) != null){
+                Objects.requireNonNull(localFrags.get(position)).onDetach();
+                Objects.requireNonNull(localFrags.get(position)).onDestroy();
                 localFrags.remove(position);
-                WlanRuleFragment wlanRuleFragment = new WlanRuleFragment(r.getWlanName());
-                viewHolder.setFrag(wlanRuleFragment);
-                localFrags.put(position, wlanRuleFragment);
             }
+            WlanRuleFragment wlanRuleFragment = new WlanRuleFragment(r.getWlanName());
+            viewHolder.setFrag(wlanRuleFragment);
+            localFrags.put(position, wlanRuleFragment);
         } else if (rule instanceof AreaRule) {
             AreaRule r = (AreaRule) rule;
             String text = String.format(res.getString(R.string.area_rule), r.getRuleName());
             viewHolder.getTextViewRuleTitle().setText(text);
-            if (localFrags.get(position) == null){
-                Configuration.getInstance().load(
-                        viewHolder.getView().getContext(),
-                        PreferenceManager.getDefaultSharedPreferences(viewHolder.getView().getContext()));
-                SelectAreaFragment selectAreaFragment = new SelectAreaFragment(
-                        r.getCenterLatitude(),
-                        r.getCenterLongitude(),
-                        r.getRadius(),
-                        r.getZoom() - 1,
-                        true);
-                viewHolder.setFrag(selectAreaFragment);
-                localFrags.put(position, selectAreaFragment);
-            }else {
+            if (localFrags.get(position) != null){
                 localFrags.get(position).onDetach();
                 localFrags.get(position).onDestroy();
                 localFrags.remove(position);
-                Configuration.getInstance().load(
-                        viewHolder.getView().getContext(),
-                        PreferenceManager.getDefaultSharedPreferences(viewHolder.getView().getContext()));
-                SelectAreaFragment selectAreaFragment = new SelectAreaFragment(
-                        r.getCenterLatitude(),
-                        r.getCenterLongitude(),
-                        r.getRadius(),
-                        r.getZoom() - 1,
-                        true);
-                viewHolder.setFrag(selectAreaFragment);
-                viewHolder.setFrag(selectAreaFragment);
-                localFrags.put(position, selectAreaFragment);
             }
+            Configuration.getInstance().load(
+                    viewHolder.getView().getContext(),
+                    PreferenceManager.getDefaultSharedPreferences(viewHolder.getView().getContext()));
+            SelectAreaFragment selectAreaFragment = new SelectAreaFragment(
+                    r.getCenterLatitude(),
+                    r.getCenterLongitude(),
+                    r.getRadius(),
+                    r.getZoom() - 1,
+                    true);
+            viewHolder.setFrag(selectAreaFragment);
+            localFrags.put(position, selectAreaFragment);
         }
 
         String startHour = getLeadingZeroString(rule.getStartHour());

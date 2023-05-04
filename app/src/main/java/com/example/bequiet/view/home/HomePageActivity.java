@@ -67,7 +67,10 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
     @Override
     public void updateRules(List<Rule> r) {
         this.runOnUiThread(() -> {
-            adapter.notifyDataSetChanged();
+            adapter.clearFragments();
+            adapter = new RulesAdapter(r);
+            rulesList.setAdapter(adapter);
+            rulesList.setLayoutManager(new LinearLayoutManager(this));
         });
     }
 
