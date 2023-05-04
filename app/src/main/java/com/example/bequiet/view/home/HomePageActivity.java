@@ -59,7 +59,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
         });
         ArrayList<Rule> rules = new ArrayList<>();
         homePagePresenter.updateRules(rules, HomePageActivity.this);
-        adapter = new RulesAdapter(rules);
+        adapter = new RulesAdapter(rules, homePagePresenter);
         rulesList.setAdapter(adapter);
         rulesList.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -68,7 +68,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
     public void updateRules(List<Rule> r) {
         this.runOnUiThread(() -> {
             adapter.clearFragments();
-            adapter = new RulesAdapter(r);
+            adapter = new RulesAdapter(r, homePagePresenter);
             rulesList.setAdapter(adapter);
             rulesList.setLayoutManager(new LinearLayoutManager(this));
         });

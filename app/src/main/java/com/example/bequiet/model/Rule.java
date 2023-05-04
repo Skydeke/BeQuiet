@@ -18,7 +18,7 @@ public abstract class Rule {
     private int endHour;
     @ColumnInfo(name = "endMinute")
     private int endMinute;
-
+    @ColumnInfo(name = "reactionType")
     private NoiseType reactionType = NoiseType.SILENT;
 
     public Rule(String ruleName, int startHour, int startMinute, int endHour, int endMinute) {

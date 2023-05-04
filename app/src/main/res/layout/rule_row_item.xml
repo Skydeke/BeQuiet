@@ -25,7 +25,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/radioGroup"
+        app:layout_constraintBottom_toBottomOf="@+id/radioGroupAction"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewRuleTitle"/>
 
@@ -36,7 +36,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/radioGroup"
+        app:layout_constraintBottom_toBottomOf="@+id/radioGroupAction"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewRuleTitle"/>
 
@@ -109,7 +109,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewAktiveUntil" />
 
     <RadioGroup
-        android:id="@+id/radioGroup"
+        android:id="@+id/radioGroupAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

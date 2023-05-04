@@ -1,10 +1,12 @@
 package com.example.bequiet.view.home;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -24,6 +26,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     private final RadioButton radioButtonSilence;
     private final RadioButton radioButtonVibrate;
     private final RadioButton radioButtonNoise;
+    private final RadioGroup radioGroupAction;
     private final FrameLayout fragmentRule;
     private final View view;
     private final Context context;
@@ -40,9 +43,18 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         textViewRuleTitle = (TextView) view.findViewById(R.id.textViewRuleTitle);
         textViewStart = (TextView) view.findViewById(R.id.textViewStartTime);
         textViewEnd = (TextView) view.findViewById(R.id.textViewEndTime);
+        radioGroupAction = (RadioGroup) view.findViewById(R.id.radioGroupAction);
         radioButtonSilence = (RadioButton) view.findViewById(R.id.radioButtonSilence);
         radioButtonVibrate = (RadioButton) view.findViewById(R.id.radioButtonVibrate);
         radioButtonNoise = (RadioButton) view.findViewById(R.id.radioButtonFullVolume);
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public RadioGroup getRadioGroupAction() {
+        return radioGroupAction;
     }
 
     public int getDataPos() {
