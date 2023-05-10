@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.bequiet.model.CoordinateCalculator;
 import com.example.bequiet.R;
 import com.example.bequiet.view.CircleOverlay;
 import com.example.bequiet.view.GPSCoordinateSelectedListener;
@@ -114,13 +113,6 @@ public class SelectAreaFragment extends Fragment implements MapListener {
         map.getOverlayManager().add(mCircleOverlay);
         map.addMapListener(this);
 
-        Log.i("GeoCoordinate in rage", "" +
-                CoordinateCalculator.isCoordinateInRange(
-                        new GeoPoint(
-                                map.getMapCenter().getLatitude(),
-                                map.getMapCenter().getLongitude()),
-                        mCircleOverlay.getRadiusInMeter(),
-                        new GeoPoint(lat, lon)));
 
         IMapController mapController = map.getController();
         mapController.setZoom(zoom);
