@@ -46,7 +46,8 @@ public class LoadingScreen extends AppCompatActivity {
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 android.Manifest.permission.NEARBY_WIFI_DEVICES,
                 android.Manifest.permission.ACCESS_WIFI_STATE,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                android.Manifest.permission.RECEIVE_BOOT_COMPLETED
         };
 
         List<String> permissionsNeeded = new ArrayList<>();
