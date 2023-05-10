@@ -1,4 +1,4 @@
-package com.example.bequiet.model;
+package com.example.bequiet.model.dataclasses;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

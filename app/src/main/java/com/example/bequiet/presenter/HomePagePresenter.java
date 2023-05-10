@@ -6,11 +6,10 @@ import android.util.Log;
 import androidx.room.Room;
 
 import com.example.bequiet.model.AppDatabase;
-import com.example.bequiet.model.AreaRule;
-import com.example.bequiet.model.Rule;
-import com.example.bequiet.model.WlanRule;
+import com.example.bequiet.model.dataclasses.AreaRule;
+import com.example.bequiet.model.dataclasses.Rule;
+import com.example.bequiet.model.dataclasses.WlanRule;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class HomePagePresenter {

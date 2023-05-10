@@ -6,6 +6,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.bequiet.model.dataclasses.AreaRule;
+import com.example.bequiet.model.dataclasses.WlanRule;
+
 import java.util.List;
 
 @Dao

@@ -8,33 +8,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.bequiet.R;
 import com.example.bequiet.model.AppDatabase;
-import com.example.bequiet.model.AreaRule;
+import com.example.bequiet.model.dataclasses.AreaRule;
 import com.example.bequiet.model.NoiseType;
-import com.example.bequiet.model.Rule;
-import com.example.bequiet.model.WlanRule;
+import com.example.bequiet.model.dataclasses.Rule;
+import com.example.bequiet.model.dataclasses.WlanRule;
 import com.example.bequiet.presenter.HomePagePresenter;
 import com.example.bequiet.view.edit.SelectAreaFragment;
 
 import org.osmdroid.config.Configuration;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

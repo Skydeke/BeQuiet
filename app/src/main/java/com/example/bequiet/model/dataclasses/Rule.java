@@ -1,8 +1,11 @@
-package com.example.bequiet.model;
+package com.example.bequiet.model.dataclasses;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.example.bequiet.model.NoiseType;
+
 @Entity(tableName = "Rule")
 public abstract class Rule {
     @PrimaryKey(autoGenerate = true)

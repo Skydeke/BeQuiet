@@ -6,18 +6,14 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
 import com.example.bequiet.model.AppDatabase;
-import com.example.bequiet.model.AreaRule;
-import com.example.bequiet.model.WlanRule;
+import com.example.bequiet.model.dataclasses.AreaRule;
+import com.example.bequiet.model.dataclasses.WlanRule;
 import com.example.bequiet.view.GPSCoordinateSelectedListener;
-import com.example.bequiet.view.edit.SelectAreaFragment;
-import com.example.bequiet.view.edit.SelectWifiFragment;
-import com.example.bequiet.view.home.HomePageActivity;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -44,7 +40,6 @@ import android.widget.TimePicker;
 import org.osmdroid.config.Configuration;
 
 import java.util.Calendar;
-import java.util.List;
 
 public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateSelectedListener, SelectWifiFragment.WifiSelectedListener {
 

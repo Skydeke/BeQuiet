@@ -45,7 +45,8 @@ public class LoadingScreen extends AppCompatActivity {
                 android.Manifest.permission.ACCESS_NETWORK_STATE,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 android.Manifest.permission.NEARBY_WIFI_DEVICES,
-                android.Manifest.permission.ACCESS_WIFI_STATE
+                android.Manifest.permission.ACCESS_WIFI_STATE,
+                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
         };
 
         List<String> permissionsNeeded = new ArrayList<>();
@@ -65,8 +66,6 @@ public class LoadingScreen extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         goToHomeActivity();
-
-
     }
 
     private void goToHomeActivity() {

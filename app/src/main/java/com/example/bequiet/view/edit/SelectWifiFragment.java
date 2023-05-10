@@ -81,7 +81,7 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
     private List<ScanResult> getAvailableWifiNetworks() {
         WifiManager wifiManager = (WifiManager) requireContext().getSystemService(Context.WIFI_SERVICE);
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //get permission for Wifi-Access
             ActivityCompat.requestPermissions((Activity) getContext(), new String[]{android.Manifest.permission.ACCESS_WIFI_STATE, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
             return null;

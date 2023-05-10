@@ -5,23 +5,19 @@ import android.os.Bundle;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityHomePageBinding;
-import com.example.bequiet.model.AppDatabase;
-import com.example.bequiet.model.AreaRule;
-import com.example.bequiet.model.Rule;
-import com.example.bequiet.model.WlanRule;
+import com.example.bequiet.model.LocationBackgroudService;
+import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.presenter.HomePagePresenter;
 import com.example.bequiet.view.edit.AddRuleActivity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +58,8 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
         adapter = new RulesAdapter(rules, homePagePresenter);
         rulesList.setAdapter(adapter);
         rulesList.setLayoutManager(new LinearLayoutManager(this));
+
+        LocationBackgroudService.INSTANCE(getApplicationContext()); //Register LocListeners
     }
 
     @Override
