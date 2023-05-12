@@ -1,15 +1,17 @@
 package com.example.bequiet.view.loading;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
+import com.example.bequiet.model.receivers.WifiListener;
 import com.example.bequiet.view.home.HomePageActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -32,6 +34,10 @@ public class LoadingScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        WifiListener wifiListener = new WifiListener();
+        getApplicationContext().registerReceiver(wifiListener, filter);
         checkAndRequestPermissions();
 
     }

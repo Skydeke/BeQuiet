@@ -1,31 +1,31 @@
 package com.example.bequiet.model.receivers;
 
-import static androidx.fragment.app.FragmentManager.TAG;
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-public class WifiListener extends BrodcastReceiver{
+import androidx.core.app.ActivityCompat;
+
+import java.util.List;
+
+public class WifiListener extends BrodcastReceiver {
     private static final String TAG = "WifiBroadcastReceiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
-            int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
-            switch (wifiState) {
-                case WifiManager.WIFI_STATE_ENABLED:
-                    Log.d(TAG, "Wi-Fi is enabled");
-                    break;
-                case WifiManager.WIFI_STATE_DISABLED:
-                    Log.d(TAG, "Wi-Fi is disabled");
-                    break;
-                case WifiManager.WIFI_STATE_UNKNOWN:
-                    Log.d(TAG, "Wi-Fi state is unknown");
-                    break;
+        if (intent.getAction().equals(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION)) {
+            boolean connected = intent.getBooleanExtra(WifiManager.EXTRA_SUPPLICANT_CONNECTED, false);
+            if (connected) {
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                Log.d("WifiReceiver", wifiInfo.toString());
             }
         }
     }
+
 }
