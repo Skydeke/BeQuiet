@@ -228,52 +228,8 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
         });
         thread.start();
         finish();
-        /*
-        try {
-            if (Build.VERSION.SDK_INT < 23) {
-                AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-                int desiredVolume = 0; // Replace with your desired volume level
-                audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
-            } else if (Build.VERSION.SDK_INT >= 23) {
-                this.requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp();
-            }
-        } catch (SecurityException e) {
-
-        }
-
-         */
     }
 
-    private void requestForDoNotDisturbPermissionOrSetDoNotDisturbForApi23AndUp() {
-
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        // if user granted access else ask for permission
-        if (notificationManager.isNotificationPolicyAccessGranted()) {
-            AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-            int desiredVolume = 0; // Replace with your desired volume level
-            audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
-        } else {
-            // Open Setting screen to ask for permisssion
-            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-            mNotificationPolicyLauncher.launch(intent);
-
-        }
-    }
-
-    private ActivityResultLauncher<Intent> mNotificationPolicyLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    // Handle success, user granted permission
-                    // You can perform the desired action here
-                    AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-                    int desiredVolume = 0; // Replace with your desired volume level
-                    audioManager.setStreamVolume(AudioManager.STREAM_RING, desiredVolume, 0);
-                } else {
-                    // Handle failure, user denied permission or cancelled
-                    // You can handle the failure scenario here
-                }
-            });
 
     @Override
     public void onWifiSelected(String ssid) {

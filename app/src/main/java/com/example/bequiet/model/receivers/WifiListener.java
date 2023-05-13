@@ -12,6 +12,8 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import com.example.bequiet.model.VolumeManager;
+
 import java.util.List;
 
 public class WifiListener extends BrodcastReceiver {
@@ -31,6 +33,7 @@ public class WifiListener extends BrodcastReceiver {
                         wifiInfo[0] = wifiManager.getConnectionInfo();
                     }
                     Log.d(TAG, wifiInfo[0].toString());
+                    VolumeManager.getInstance().muteDevice(context);
                 }).start();
             }
         }

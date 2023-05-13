@@ -2,15 +2,20 @@ package com.example.bequiet.view.loading;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import com.example.bequiet.model.receivers.WifiListener;
 import com.example.bequiet.view.home.HomePageActivity;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
@@ -44,8 +49,11 @@ public class LoadingScreen extends AppCompatActivity {
         WifiListener wifiListener = new WifiListener();
         getApplicationContext().registerReceiver(wifiListener, filter);
         Log.i("Perms", "Hello App.: ");
+
+        checkDoNotDisturbPermission();
         checkAndRequestPermissions();
     }
+
 
     private void checkAndRequestPermissions() {
         String[] permissionsList = new String[]{
@@ -64,7 +72,7 @@ public class LoadingScreen extends AppCompatActivity {
         for (String permission : permissionsList) { //check which permissions are missing
             if (ContextCompat.checkSelfPermission(LoadingScreen.this, permission) != PackageManager.PERMISSION_GRANTED) {
                 permissionsNeeded.add(permission);
-            }else {
+            } else {
                 Log.i("Perms", "Got: " + permission);
             }
         }
@@ -78,6 +86,27 @@ public class LoadingScreen extends AppCompatActivity {
             goToHomeActivity();
         }
     }
+
+    private void checkDoNotDisturbPermission() {
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        ActivityResultLauncher<Intent> notificationPolicyLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Handle success, user denied permission or cancelled
+
+                    } else {
+                        // Handle failure, user denied permission or cancelled
+                        // You can handle the failure scenario here
+                    }
+                });
+
+        if (!notificationManager.isNotificationPolicyAccessGranted()) {
+            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            notificationPolicyLauncher.launch(intent);
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
