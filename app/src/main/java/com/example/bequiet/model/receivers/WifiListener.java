@@ -30,7 +30,7 @@ public class WifiListener extends BrodcastReceiver {
                     while (wifiInfo[0].getSupplicantState() != SupplicantState.COMPLETED){
                         wifiInfo[0] = wifiManager.getConnectionInfo();
                     }
-                    Log.d("WifiReceiver", wifiInfo[0].toString());
+                    Log.d(TAG, wifiInfo[0].toString());
                 }).start();
             }
         }

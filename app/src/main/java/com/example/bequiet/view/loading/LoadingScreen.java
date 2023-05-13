@@ -1,5 +1,7 @@
 package com.example.bequiet.view.loading;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -12,6 +14,7 @@ import com.example.bequiet.view.home.HomePageActivity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,6 +22,8 @@ import androidx.core.content.ContextCompat;
 import com.example.bequiet.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class LoadingScreen extends AppCompatActivity {
@@ -38,21 +43,20 @@ public class LoadingScreen extends AppCompatActivity {
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         WifiListener wifiListener = new WifiListener();
         getApplicationContext().registerReceiver(wifiListener, filter);
+        Log.i("Perms", "Hello App.: ");
         checkAndRequestPermissions();
-
     }
 
     private void checkAndRequestPermissions() {
         String[] permissionsList = new String[]{
-                android.Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+//                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                android.Manifest.permission.INTERNET,
-                android.Manifest.permission.ACCESS_NETWORK_STATE,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 android.Manifest.permission.NEARBY_WIFI_DEVICES,
+                android.Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+                android.Manifest.permission.INTERNET,
+                android.Manifest.permission.ACCESS_NETWORK_STATE,
                 android.Manifest.permission.ACCESS_WIFI_STATE,
-                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 android.Manifest.permission.RECEIVE_BOOT_COMPLETED
         };
 
@@ -60,10 +64,16 @@ public class LoadingScreen extends AppCompatActivity {
         for (String permission : permissionsList) { //check which permissions are missing
             if (ContextCompat.checkSelfPermission(LoadingScreen.this, permission) != PackageManager.PERMISSION_GRANTED) {
                 permissionsNeeded.add(permission);
+            }else {
+                Log.i("Perms", "Got: " + permission);
             }
         }
+
         if (!permissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, permissionsNeeded.toArray(new String[permissionsNeeded.size()]), PERMISSION_REQUEST_CODE);
+            Log.i("Perms", "Requesting: " + Arrays.toString(permissionsNeeded.toArray()));
+            ActivityCompat.requestPermissions(this,
+                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]),
+                    PERMISSION_REQUEST_CODE);
         } else {
             goToHomeActivity();
         }
