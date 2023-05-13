@@ -49,18 +49,21 @@ public class WifiListener extends BrodcastReceiver {
                     AppDatabase.class, "rules").build();
 
             List<WlanRule> wlanRules = db.ruleDAO().loadAllWlanRules();
+            Log.d(TAG, "Rules: " + wlanRules.size());
             for (WlanRule wlanRule : wlanRules) {
-
                 if (wlanRule.getWlanName().equals(ssid))
                     switch (wlanRule.getReactionType()) {
                         case SILENT:
                             VolumeManager.getInstance().muteDevice(context);
+                            Log.d(TAG, "Muted device.");
                             break;
                         case VIBRATE:
                             VolumeManager.getInstance().turnVibrationOn(context);
+                            Log.d(TAG, "Device vibrating.");
                             break;
                         case NOISE:
                             VolumeManager.getInstance().turnNoiseOn(context);
+                            Log.d(TAG, "Device making noise.");
                     }
             }
             db.close();

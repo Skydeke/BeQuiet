@@ -1,17 +1,27 @@
 package com.example.bequiet.model;
 
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.room.Room;
+
+import com.example.bequiet.model.dataclasses.AreaRule;
+import com.example.bequiet.model.dataclasses.WlanRule;
+
+import java.util.List;
 
 public class LocationListener implements android.location.LocationListener {
 
     private static final String TAG = "LocationListener";
 
     Location mLastLocation;
+    Context context;
 
-    public LocationListener(String provider) {
+    public LocationListener(String provider, Context c) {
         Log.i(TAG, "LocationListener " + provider);
+        this.context = c;
         mLastLocation = new Location(provider);
     }
 
@@ -19,6 +29,42 @@ public class LocationListener implements android.location.LocationListener {
     public void onLocationChanged(Location location) {
         Log.i(TAG, "onLocationChanged: " + location);
         mLastLocation.set(location);
+        checkRules();
+    }
+
+    private void checkRules() {
+        Thread thread = new Thread(() -> {
+            AppDatabase db = Room.databaseBuilder(context,
+                    AppDatabase.class, "rules").build();
+
+            List<AreaRule> areaRules = db.ruleDAO().loadAllAreaRules();
+            Log.d(TAG, "Rules: " + areaRules.size());
+            for (AreaRule areaRule : areaRules) {
+                if (Haversine.pointIsWithinCircle(
+                        areaRule.getCenterLatitude(),
+                        areaRule.getCenterLongitude(),
+                        mLastLocation.getLatitude(),
+                        mLastLocation.getLongitude(),
+                        (int) areaRule.getRadius())) {
+                    Log.d(TAG, "Inside Area of rule.");
+                    switch (areaRule.getReactionType()) {
+                        case SILENT:
+                            VolumeManager.getInstance().muteDevice(context);
+                            Log.d(TAG, "Muted device.");
+                            break;
+                        case VIBRATE:
+                            VolumeManager.getInstance().turnVibrationOn(context);
+                            Log.d(TAG, "Device vibrating.");
+                            break;
+                        case NOISE:
+                            VolumeManager.getInstance().turnNoiseOn(context);
+                            Log.d(TAG, "Device making noise.");
+                    }
+                }
+            }
+            db.close();
+        });
+        thread.start();
     }
 
     @Override

@@ -31,13 +31,14 @@ public class LocationBackgroudService {
     }
 
     private final Context c;
-    private final LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
+    private final LocationListener[] mLocationListeners;
 
     private LocationBackgroudService(Context c) {
         this.c = c;
+        mLocationListeners = new LocationListener[]{
+                new LocationListener(LocationManager.GPS_PROVIDER, c),
+                new LocationListener(LocationManager.NETWORK_PROVIDER, c)
+        };
         initializeLocationManager();
         addListeners();
     }
