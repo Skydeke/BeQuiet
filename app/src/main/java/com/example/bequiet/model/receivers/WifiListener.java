@@ -11,8 +11,12 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.room.Room;
 
+import com.example.bequiet.model.AppDatabase;
 import com.example.bequiet.model.VolumeManager;
+import com.example.bequiet.model.dataclasses.AreaRule;
+import com.example.bequiet.model.dataclasses.WlanRule;
 
 import java.util.List;
 
@@ -29,14 +33,39 @@ public class WifiListener extends BrodcastReceiver {
                 final WifiInfo[] wifiInfo = {wifiManager.getConnectionInfo()};
                 // Connecting takes a while so we wait until the INfo is there.
                 new Thread(() -> {
-                    while (wifiInfo[0].getSupplicantState() != SupplicantState.COMPLETED){
+                    while (wifiInfo[0].getSupplicantState() != SupplicantState.COMPLETED) {
                         wifiInfo[0] = wifiManager.getConnectionInfo();
                     }
+                    checkRules(context, wifiInfo[0].toString());
                     Log.d(TAG, wifiInfo[0].toString());
-                    VolumeManager.getInstance().muteDevice(context);
                 }).start();
             }
         }
+    }
+
+    private void checkRules(Context context, String ssid) {
+        Thread thread = new Thread(() -> {
+            AppDatabase db = Room.databaseBuilder(context,
+                    AppDatabase.class, "rules").build();
+
+            List<WlanRule> wlanRules = db.ruleDAO().loadAllWlanRules();
+            for (WlanRule wlanRule : wlanRules) {
+
+                if (wlanRule.getWlanName().equals(ssid))
+                    switch (wlanRule.getReactionType()) {
+                        case SILENT:
+                            VolumeManager.getInstance().muteDevice(context);
+                            break;
+                        case VIBRATE:
+                            VolumeManager.getInstance().turnVibrationOn(context);
+                            break;
+                        case NOISE:
+                            VolumeManager.getInstance().turnNoiseOn(context);
+                    }
+            }
+            db.close();
+        });
+        thread.start();
     }
 
 }
