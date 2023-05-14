@@ -8,7 +8,6 @@ import android.util.Log;
 import androidx.room.Room;
 
 import com.example.bequiet.model.dataclasses.AreaRule;
-import com.example.bequiet.model.dataclasses.WlanRule;
 
 import java.util.List;
 
@@ -47,18 +46,48 @@ public class LocationListener implements android.location.LocationListener {
                         mLastLocation.getLongitude(),
                         (int) areaRule.getRadius())) {
                     Log.d(TAG, "Inside Area of rule.");
-                    switch (areaRule.getReactionType()) {
-                        case SILENT:
-                            VolumeManager.getInstance().muteDevice(context);
-                            Log.d(TAG, "Muted device.");
-                            break;
-                        case VIBRATE:
-                            VolumeManager.getInstance().turnVibrationOn(context);
-                            Log.d(TAG, "Device vibrating.");
-                            break;
-                        case NOISE:
+                    if (areaRule.isActive()) {
+                        switch (areaRule.getReactionType()) {
+                            case SILENT:
+                                VolumeManager.getInstance().muteDevice(context);
+                                Log.d(TAG, "Muted device.");
+                                break;
+                            case VIBRATE:
+                                VolumeManager.getInstance().turnVibrationOn(context);
+                                Log.d(TAG, "Device vibrating.");
+                                break;
+                            case NOISE:
+                                VolumeManager.getInstance().turnNoiseOn(context);
+                                Log.d(TAG, "Device making noise.");
+                        }
+                        RuleTimer.getInstance().startTimer(areaRule.getDurationEnd(), () -> {
                             VolumeManager.getInstance().turnNoiseOn(context);
-                            Log.d(TAG, "Device making noise.");
+                            Log.d(TAG, "Reset Volume in Handler.");
+                            RuleTimer.getInstance().startTimer(areaRule.getDurationStart(), () -> {
+                                checkRules();
+                            });
+                        });
+                    } else {
+                        VolumeManager.getInstance().turnNoiseOn(context);
+                        Log.d(TAG, "Reset Volume in Handler.");
+                        RuleTimer.getInstance().startTimer(areaRule.getDurationStart(), () -> {
+                            switch (areaRule.getReactionType()) {
+                                case SILENT:
+                                    VolumeManager.getInstance().muteDevice(context);
+                                    Log.d(TAG, "Muted device. In Handler");
+                                    break;
+                                case VIBRATE:
+                                    VolumeManager.getInstance().turnVibrationOn(context);
+                                    Log.d(TAG, "Device vibrating. In Handler");
+                                    break;
+                                case NOISE:
+                                    VolumeManager.getInstance().turnNoiseOn(context);
+                                    Log.d(TAG, "Device making noise. In Handler");
+                            }
+                            RuleTimer.getInstance().startTimer(areaRule.getDurationEnd(), () -> {
+                                checkRules();
+                            });
+                        });
                     }
                 }
             }
