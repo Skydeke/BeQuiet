@@ -43,12 +43,6 @@ public class LoadingScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
-        WifiListener wifiListener = new WifiListener();
-        getApplicationContext().registerReceiver(wifiListener, filter);
-        LocationListenerRegisterer.INSTANCE(getApplicationContext()); //Register LocListeners
-        Log.i("Perms", "Hello App.: ");
         checkDoNotDisturbPermission();
         checkBackgroundLocationPermission();
     }
@@ -105,12 +99,18 @@ public class LoadingScreen extends AppCompatActivity {
     }
 
     private void checkBackgroundLocationPermission() {
-        if (!(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+        PackageManager packageManager = getPackageManager();
+        int permissionStatus = packageManager.checkPermission(
+                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                getPackageName());
+        if (permissionStatus == PackageManager.PERMISSION_DENIED) {
             Toast.makeText(this, "Go under settings and give us the location all the time", Toast.LENGTH_LONG).show();
             ActivityResultLauncher<Intent> locationLauncher = registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        if (!(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+
+
+                        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                             Toast.makeText(this, "We need the background location to work properly", Toast.LENGTH_LONG).show();
                             checkBackgroundLocationPermission();
                         } else {
@@ -156,9 +156,24 @@ public class LoadingScreen extends AppCompatActivity {
         }
     }
 
+    private void startWifiListener() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        WifiListener wifiListener = new WifiListener();
+        getApplicationContext().registerReceiver(wifiListener, filter);
+        LocationListenerRegisterer.INSTANCE(getApplicationContext()); //Register LocListeners
+    }
+
+    private void startLocationListner() {
+        LocationListenerRegisterer.INSTANCE(getApplicationContext()); //Register LocListeners
+
+    }
+
     private void goToHomeActivity() {
         Handler handler = new Handler();
         handler.postDelayed(() -> {
+            startLocationListner();
+            startWifiListener();
             Intent intent = new Intent(LoadingScreen.this, HomePageActivity.class);
             startActivity(intent);
             finish();
