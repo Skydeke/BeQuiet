@@ -1,6 +1,7 @@
 package com.example.bequiet.view.edit;
 
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -96,13 +97,21 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
                     TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            editTextStartDate.setText(hourOfDay + ":" + minute);
+                            editTextStartDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute));
                             startHour = hourOfDay;
                             startMinute = minute;
                             editTextStartDate.clearFocus();
                             changeButtonState();
                         }
                     }, hour, minute, true);
+
+                    timePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            editTextStartDate.clearFocus();
+                        }
+                    });
+
                     timePickerDialog.show();
                 }
             }
@@ -120,13 +129,20 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
                     TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            editTextEndDate.setText(hourOfDay + ":" + minute);
+                            editTextEndDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute));
                             endHour = hourOfDay;
                             endMinute = minute;
                             editTextEndDate.clearFocus();
                             changeButtonState();
                         }
+
                     }, hour, minute, true);
+                    timePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            editTextEndDate.clearFocus();
+                        }
+                    });
                     timePickerDialog.show();
                 }
             }
@@ -241,6 +257,12 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
         } else {
             return !wifissid.equals("");
         }
+    }
+    private String getLeadingZeroString(int time) {
+        if (time < 10) {
+            return "0" + time;
+        } else
+            return String.valueOf(time);
     }
 
 }
