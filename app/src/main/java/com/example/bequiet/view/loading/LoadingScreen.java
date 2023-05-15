@@ -93,8 +93,6 @@ public class LoadingScreen extends AppCompatActivity {
         if (!notificationManager.isNotificationPolicyAccessGranted()) {
             Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
             notificationPolicyLauncher.launch(intent);
-        } else {
-            checkAndRequestPermissions();
         }
     }
 
@@ -108,13 +106,11 @@ public class LoadingScreen extends AppCompatActivity {
             ActivityResultLauncher<Intent> locationLauncher = registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-
-
                         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                            checkAndRequestPermissions();
+                        } else {
                             Toast.makeText(this, "We need the background location to work properly", Toast.LENGTH_LONG).show();
                             checkBackgroundLocationPermission();
-                        } else {
-                            checkAndRequestPermissions();
                         }
                     });
 
