@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -44,18 +47,14 @@ public class LoadingScreen extends AppCompatActivity {
         WifiListener wifiListener = new WifiListener();
         getApplicationContext().registerReceiver(wifiListener, filter);
         Log.i("Perms", "Hello App.: ");
-
         checkDoNotDisturbPermission();
-        checkAndRequestPermissions();
+        checkBackgroundLocationPermission();
     }
 
 
     private void checkAndRequestPermissions() {
         String[] permissionsList = new String[]{
-//                android.Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.NEARBY_WIFI_DEVICES,
                 android.Manifest.permission.ACCESS_NOTIFICATION_POLICY,
                 android.Manifest.permission.INTERNET,
                 android.Manifest.permission.ACCESS_NETWORK_STATE,
@@ -87,18 +86,42 @@ public class LoadingScreen extends AppCompatActivity {
         ActivityResultLauncher<Intent> notificationPolicyLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        // Handle success, user denied permission or cancelled
-
+                    if (!notificationManager.isNotificationPolicyAccessGranted()) {
+                        Toast.makeText(this, "We need the do not disturb permission to work properly", Toast.LENGTH_LONG).show();
+                        checkDoNotDisturbPermission();
                     } else {
-                        // Handle failure, user denied permission or cancelled
-                        // You can handle the failure scenario here
+                        checkAndRequestPermissions();
                     }
                 });
 
         if (!notificationManager.isNotificationPolicyAccessGranted()) {
             Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
             notificationPolicyLauncher.launch(intent);
+        } else {
+            checkAndRequestPermissions();
+        }
+    }
+
+    private void checkBackgroundLocationPermission() {
+        if (!(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            Toast.makeText(this, "Go under settings and give us the location all the time", Toast.LENGTH_LONG).show();
+            ActivityResultLauncher<Intent> locationLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (!(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+                            Toast.makeText(this, "We need the background location to work properly", Toast.LENGTH_LONG).show();
+                            checkBackgroundLocationPermission();
+                        } else {
+                            checkAndRequestPermissions();
+                        }
+                    });
+
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            locationLauncher.launch(intent);
+        } else {
+            checkAndRequestPermissions();
         }
     }
 
@@ -106,7 +129,29 @@ public class LoadingScreen extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        goToHomeActivity();
+        String[] permissionsList = new String[]{
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+                android.Manifest.permission.INTERNET,
+                android.Manifest.permission.ACCESS_NETWORK_STATE,
+                android.Manifest.permission.ACCESS_WIFI_STATE,
+                android.Manifest.permission.RECEIVE_BOOT_COMPLETED
+        };
+
+        List<String> permissionsNeeded = new ArrayList<>();
+        for (String permission : permissionsList) { //check which permissions are missing
+            if (ContextCompat.checkSelfPermission(LoadingScreen.this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(permission);
+            } else {
+                Log.i("Perms", "Got: " + permission);
+            }
+        }
+        if (!permissionsNeeded.isEmpty()) {
+            Toast.makeText(this, "We need all the permissions to work properly", Toast.LENGTH_LONG).show();
+        } else {
+            goToHomeActivity();
+
+        }
     }
 
     private void goToHomeActivity() {
