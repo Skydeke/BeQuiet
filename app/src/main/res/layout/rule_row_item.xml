@@ -26,7 +26,7 @@
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/radioGroupAction"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewRuleTitle"/>
+        app:layout_constraintTop_toBottomOf="@+id/textViewRuleTitle" />
 
     <FrameLayout
         android:id="@+id/fragmentRule"
@@ -97,23 +97,13 @@
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="@+id/textViewAktiveUntil" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/action"
-        app:layout_constraintStart_toEndOf="@+id/fragmentRuleSpacing"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAktiveUntil" />
-
     <RadioGroup
         android:id="@+id/radioGroupAction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView6"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@+id/fragmentRuleSpacing"
         app:layout_constraintTop_toBottomOf="@+id/imageView4">
 
         <RadioButton
