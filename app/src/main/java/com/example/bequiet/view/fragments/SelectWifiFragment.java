@@ -7,12 +7,6 @@ import android.graphics.Color;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +15,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
 import com.example.bequiet.R;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +58,7 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_select_wifi, container, false);
         ListView listView = view.findViewById(R.id.list_view_wifi);
-        List<String> wifis = (List<String>) getAvailableWifiNetworks().stream().map(x -> x.SSID).collect(Collectors.toList());
+        List<String> wifis = Objects.requireNonNull(getAvailableWifiNetworks()).stream().map(x -> x.SSID).collect(Collectors.toList());
         //add test wifis to list more
         wifis.add("Test1");
         wifis.add("Test2");
@@ -80,7 +80,7 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
     private List<ScanResult> getAvailableWifiNetworks() {
         WifiManager wifiManager = (WifiManager) requireContext().getSystemService(Context.WIFI_SERVICE);
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //get permission for Wifi-Access
             ActivityCompat.requestPermissions((Activity) getContext(), new String[]{android.Manifest.permission.ACCESS_WIFI_STATE, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
             return null;
@@ -107,6 +107,6 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     public interface WifiSelectedListener {
-        public void onWifiSelected(String name);
+        void onWifiSelected(String name);
     }
 }

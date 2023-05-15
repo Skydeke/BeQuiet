@@ -1,6 +1,5 @@
 package com.example.bequiet.model;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.util.Log;

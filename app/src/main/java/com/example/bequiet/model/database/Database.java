@@ -1,20 +1,14 @@
 package com.example.bequiet.model.database;
 
 import android.content.Context;
-import android.location.Location;
-import android.util.Log;
 
 import androidx.room.Room;
 
-import com.example.bequiet.model.Haversine;
-import com.example.bequiet.model.RuleTimer;
-import com.example.bequiet.model.VolumeManager;
 import com.example.bequiet.model.dataclasses.AreaRule;
 import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.model.dataclasses.WlanRule;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Database {

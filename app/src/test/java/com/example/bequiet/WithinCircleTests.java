@@ -1,10 +1,11 @@
 package com.example.bequiet;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.example.bequiet.model.Haversine;
+
+import org.junit.Test;
 
 public class WithinCircleTests {
     @Test

@@ -4,17 +4,13 @@ package com.example.bequiet.view.home;
 import android.content.Context;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.example.bequiet.R;
 import com.example.bequiet.model.database.Database;
@@ -22,7 +18,6 @@ import com.example.bequiet.model.dataclasses.AreaRule;
 import com.example.bequiet.model.dataclasses.NoiseType;
 import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.model.dataclasses.WlanRule;
-import com.example.bequiet.presenter.HomePagePresenter;
 import com.example.bequiet.view.fragments.SelectAreaFragment;
 import com.example.bequiet.view.fragments.WlanRuleFragment;
 
@@ -70,8 +65,8 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         Rule rule = localDataSet.get(position);
-        WlanRule wr = null;
-        AreaRule ar = null;
+        WlanRule wr;
+        AreaRule ar;
         Resources res = viewHolder.getView().getResources();
         viewHolder.setDataPos(position);
 

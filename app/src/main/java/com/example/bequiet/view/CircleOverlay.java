@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.util.Log;
 
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
@@ -19,11 +18,11 @@ public class CircleOverlay extends Overlay {
 
     private double latitute;
 
-    private Paint paint;
+    private final Paint paint;
 
     private float referenceScale;
 
-    private float radiusPx;
+    private final float radiusPx;
 
     public CircleOverlay(Context context, float radius, float radiusPx, float referenceScale, double latitude, double longitude) {
         super(context);

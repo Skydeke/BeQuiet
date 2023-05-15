@@ -2,6 +2,13 @@ package com.example.bequiet.view.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityHomePageBinding;
@@ -9,15 +16,6 @@ import com.example.bequiet.model.LocationListenerRegisterer;
 import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.presenter.HomePagePresenter;
 import com.example.bequiet.view.edit.AddRuleActivity;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
-import android.widget.TextView;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +44,9 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
         emptyListHint = findViewById(R.id.textViewNoRulesCreated);
         rulesList = findViewById(R.id.rulesList);
 
-        findViewById(R.id.addRuleFab).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Intent i = new Intent(HomePageActivity.this, AddRuleActivity.class);
-                startActivity(i);
-            }
+        findViewById(R.id.addRuleFab).setOnClickListener(view -> {
+            final Intent i = new Intent(HomePageActivity.this, AddRuleActivity.class);
+            startActivity(i);
         });
         ArrayList<Rule> rules = new ArrayList<>();
         homePagePresenter.getRulesAndDraw(HomePageActivity.this);

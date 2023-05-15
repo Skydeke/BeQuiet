@@ -1,7 +1,6 @@
 package com.example.bequiet.presenter;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.bequiet.model.database.Database;
 import com.example.bequiet.model.dataclasses.Rule;
@@ -10,7 +9,7 @@ import java.util.List;
 
 public class HomePagePresenter {
 
-    private ViewInterface viewInterface;
+    private final ViewInterface viewInterface;
 
     public HomePagePresenter(ViewInterface viewInterface) {
         this.viewInterface = viewInterface;
@@ -25,8 +24,8 @@ public class HomePagePresenter {
     }
 
     public interface ViewInterface {
-        public void redrawRules(List<Rule> r);
+        void redrawRules(List<Rule> r);
 
-        public void setEmptyListTextShown(boolean shown);
+        void setEmptyListTextShown(boolean shown);
     }
 }

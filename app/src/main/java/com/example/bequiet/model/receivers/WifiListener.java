@@ -10,10 +10,7 @@ import android.util.Log;
 import com.example.bequiet.model.RuleTimer;
 import com.example.bequiet.model.VolumeManager;
 import com.example.bequiet.model.database.Database;
-import com.example.bequiet.model.database.WlanRuleListCallback;
 import com.example.bequiet.model.dataclasses.WlanRule;
-
-import java.util.List;
 
 public class WifiListener extends BrodcastReceiver {
     private static final String TAG = "WifiBroadcastReceiver";
@@ -49,20 +46,14 @@ public class WifiListener extends BrodcastReceiver {
                         RuleTimer.getInstance().startTimer(wlanRule.getDurationEnd(), () -> {
                             volumeManager.turnNoiseOn();
                             Log.d(TAG, "Reset Volume in Handler.");
-                            RuleTimer.getInstance().startTimer(wlanRule.getDurationStart(), () -> {
-                                checkRules(context, ssid);
-                            });
-
+                            RuleTimer.getInstance().startTimer(wlanRule.getDurationStart(), () -> checkRules(context, ssid));
                         });
-
                     } else {
                         volumeManager.turnNoiseOn();
                         Log.d(TAG, "Reset Volume in Handler.");
                         RuleTimer.getInstance().startTimer(wlanRule.getDurationStart(), () -> {
                             volumeManager.actOnNoiseAction(wlanRule.getReactionType());
-                            RuleTimer.getInstance().startTimer(wlanRule.getDurationEnd(), () -> {
-                                checkRules(context, ssid);
-                            });
+                            RuleTimer.getInstance().startTimer(wlanRule.getDurationEnd(), () -> checkRules(context, ssid));
                         });
                     }
                 }

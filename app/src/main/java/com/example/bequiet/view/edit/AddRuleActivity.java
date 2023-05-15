@@ -2,6 +2,21 @@ package com.example.bequiet.view.edit;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TimePicker;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.ui.AppBarConfiguration;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
@@ -12,36 +27,13 @@ import com.example.bequiet.view.GPSCoordinateSelectedListener;
 import com.example.bequiet.view.fragments.SelectAreaFragment;
 import com.example.bequiet.view.fragments.SelectWifiFragment;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-
-import androidx.navigation.ui.AppBarConfiguration;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TimePicker;
-
 import org.osmdroid.config.Configuration;
 
 import java.util.Calendar;
 
 public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateSelectedListener, SelectWifiFragment.WifiSelectedListener {
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityAddRuleBinding binding;
-
-    private static final int ON_DO_NOT_DISTURB_CALLBACK_CODE = 123; // Replace with your desired value
-
-
     private String ruleName = "";
 
     private int startHour = -1;
@@ -233,12 +225,7 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
     }
 
     private void changeButtonState() {
-        if (!insertedAllValues()) {
-            btnSaveRule.setEnabled(false);
-
-        } else {
-            btnSaveRule.setEnabled(true);
-        }
+        btnSaveRule.setEnabled(insertedAllValues());
     }
 
     private boolean insertedAllValues() {
@@ -250,11 +237,10 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
 
         if (state == 0) {
             if (lat == -1000) return false;
-            if (lon == -1000) return false;
+            return lon != -1000;
         } else {
-            if (wifissid.equals("")) return false;
+            return !wifissid.equals("");
         }
-        return true;
     }
 
 }

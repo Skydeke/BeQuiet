@@ -4,11 +4,8 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
-import com.example.bequiet.model.database.AreaRuleListCallback;
 import com.example.bequiet.model.database.Database;
 import com.example.bequiet.model.dataclasses.AreaRule;
-
-import java.util.List;
 
 public class LocationListener implements android.location.LocationListener {
 
@@ -48,18 +45,14 @@ public class LocationListener implements android.location.LocationListener {
                         RuleTimer.getInstance().startTimer(areaRule.getDurationEnd(), () -> {
                             volumeManager.turnNoiseOn();
                             Log.d(TAG, "Reset Volume in Handler.");
-                            RuleTimer.getInstance().startTimer(areaRule.getDurationStart(), () -> {
-                                checkRules(context);
-                            });
+                            RuleTimer.getInstance().startTimer(areaRule.getDurationStart(), () -> checkRules(context));
                         });
                     } else {
                         volumeManager.turnNoiseOn();
                         Log.d(TAG, "Reset Volume in Handler.");
                         RuleTimer.getInstance().startTimer(areaRule.getDurationStart(), () -> {
                             volumeManager.actOnNoiseAction(areaRule.getReactionType());
-                            RuleTimer.getInstance().startTimer(areaRule.getDurationEnd(), () -> {
-                                checkRules(context);
-                            });
+                            RuleTimer.getInstance().startTimer(areaRule.getDurationEnd(), () -> checkRules(context));
                         });
                     }
                 }

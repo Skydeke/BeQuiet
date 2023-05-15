@@ -1,34 +1,29 @@
 package com.example.bequiet.view.loading;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-
-import com.example.bequiet.model.receivers.WifiListener;
-import com.example.bequiet.view.home.HomePageActivity;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.bequiet.R;
+import com.example.bequiet.model.receivers.WifiListener;
+import com.example.bequiet.view.home.HomePageActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class LoadingScreen extends AppCompatActivity {
@@ -109,7 +104,7 @@ public class LoadingScreen extends AppCompatActivity {
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         goToHomeActivity();
     }
