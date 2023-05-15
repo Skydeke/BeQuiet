@@ -1,4 +1,4 @@
-package com.example.bequiet.model;
+package com.example.bequiet.model.database;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;

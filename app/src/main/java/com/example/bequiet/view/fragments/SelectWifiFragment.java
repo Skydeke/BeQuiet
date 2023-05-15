@@ -1,4 +1,4 @@
-package com.example.bequiet.view.edit;
+package com.example.bequiet.view.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,7 +24,6 @@ import android.widget.ListView;
 import com.example.bequiet.R;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**

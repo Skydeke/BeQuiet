@@ -1,4 +1,4 @@
-package com.example.bequiet.model;
+package com.example.bequiet.model.database;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

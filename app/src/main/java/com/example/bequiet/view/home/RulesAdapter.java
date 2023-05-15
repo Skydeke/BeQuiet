@@ -17,13 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.bequiet.R;
-import com.example.bequiet.model.AppDatabase;
+import com.example.bequiet.model.database.Database;
 import com.example.bequiet.model.dataclasses.AreaRule;
-import com.example.bequiet.model.NoiseType;
+import com.example.bequiet.model.dataclasses.NoiseType;
 import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.model.dataclasses.WlanRule;
 import com.example.bequiet.presenter.HomePagePresenter;
-import com.example.bequiet.view.edit.SelectAreaFragment;
+import com.example.bequiet.view.fragments.SelectAreaFragment;
+import com.example.bequiet.view.fragments.WlanRuleFragment;
 
 import org.osmdroid.config.Configuration;
 
@@ -34,43 +35,33 @@ import java.util.Objects;
 
 public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-    private List<Rule> localDataSet;
-    private HashMap<Integer, Fragment> localFrags;
-    private HomePagePresenter homePagePresenter;
+    private final List<Rule> localDataSet;
+    private final HashMap<Integer, Fragment> localFrags;
 
-    public RulesAdapter(List<Rule> dataSet, HomePagePresenter pres) {
+    public RulesAdapter(List<Rule> dataSet) {
         localDataSet = dataSet;
         localFrags = new HashMap<>();
-        this.homePagePresenter = pres;
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         // Create a new view, which defines the UI of the list item
         View view = inflater.inflate(R.layout.rule_row_item, viewGroup, false);
-
-        // Add the Fragment to the View using a FragmentManager
-        FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
         return new ViewHolder(view, context);
     }
 
     public void clearFragments() {
+        // We need to manually manage Fragments because we want to display them inside RecyclerView
         for (Iterator<Integer> iterator = localFrags.keySet().iterator(); iterator.hasNext(); ) {
             Integer position = iterator.next();
-            localFrags.get(position).onDetach();
-            localFrags.get(position).onDestroy();
+            Objects.requireNonNull(localFrags.get(position)).onDetach();
+            Objects.requireNonNull(localFrags.get(position)).onDestroy();
             iterator.remove();
         }
-        Log.i("CLEARED", "Frags: " + localFrags.keySet().size());
-    }
-
-    public void setLocalDataSet(List<Rule> dataSet) {
-        this.localDataSet.clear();
-        this.localDataSet.addAll(dataSet);
-//        this.notifyDataSetChanged();
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -101,8 +92,8 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
             String text = String.format(res.getString(R.string.area_rule), ar.getRuleName());
             viewHolder.getTextViewRuleTitle().setText(text);
             if (localFrags.get(position) != null) {
-                localFrags.get(position).onDetach();
-                localFrags.get(position).onDestroy();
+                Objects.requireNonNull(localFrags.get(position)).onDetach();
+                Objects.requireNonNull(localFrags.get(position)).onDestroy();
                 localFrags.remove(position);
             }
             Configuration.getInstance().load(
@@ -140,62 +131,24 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
                 break;
         }
 
-        WlanRule finalWr = wr;
-        AreaRule finalAr = ar;
-        viewHolder.getRadioButtonSilence().setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                if (rule instanceof  WlanRule){
-                    finalWr.setReactionType(NoiseType.SILENT);
-                    this.updateDBWlanRule(viewHolder.getContext(), finalWr);
-                } else if (rule instanceof  AreaRule) {
-                    finalAr.setReactionType(NoiseType.SILENT);
-                    this.updateDBAreaRule(viewHolder.getContext(), finalAr);
-                }
-            }
-        });
-        viewHolder.getRadioButtonVibrate().setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                if (rule instanceof  WlanRule){
-                    finalWr.setReactionType(NoiseType.VIBRATE);
-                    this.updateDBWlanRule(viewHolder.getContext(), finalWr);
-                } else if (rule instanceof  AreaRule) {
-                    finalAr.setReactionType(NoiseType.VIBRATE);
-                    this.updateDBAreaRule(viewHolder.getContext(), finalAr);
-                }
-            }
-        });
-        viewHolder.getRadioButtonNoise().setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                if (rule instanceof  WlanRule){
-                    finalWr.setReactionType(NoiseType.NOISE);
-                    this.updateDBWlanRule(viewHolder.getContext(), finalWr);
-                } else if (rule instanceof  AreaRule) {
-                    finalAr.setReactionType(NoiseType.NOISE);
-                    this.updateDBAreaRule(viewHolder.getContext(), finalAr);
-                }
-            }
-        });
+        viewHolder.getRadioButtonSilence().setOnCheckedChangeListener((compoundButton, b) -> updateNoiseTypeTo(rule, NoiseType.SILENT, b, viewHolder.getContext()));
+        viewHolder.getRadioButtonVibrate().setOnCheckedChangeListener((compoundButton, b) -> updateNoiseTypeTo(rule, NoiseType.VIBRATE, b, viewHolder.getContext()));
+        viewHolder.getRadioButtonNoise().setOnCheckedChangeListener((compoundButton, b) -> updateNoiseTypeTo(rule, NoiseType.NOISE, b, viewHolder.getContext()));
     }
 
-    private void updateDBAreaRule(Context context, AreaRule a){
-        Thread thread = new Thread(() -> {
-            AppDatabase db = Room.databaseBuilder(context,
-                    AppDatabase.class, "rules").build();
-            db.ruleDAO().updateAreaRule(a);
-            Log.i("database", db.ruleDAO().loadAllAreaRules().toString());
-            db.close();
-        });
-        thread.start();
-    }
-
-    private void updateDBWlanRule(Context context, WlanRule w){
-        Thread thread = new Thread(() -> {
-            AppDatabase db = Room.databaseBuilder(context,
-                    AppDatabase.class, "rules").build();
-            db.ruleDAO().updateWlanRule(w);
-            db.close();
-        });
-        thread.start();
+    private void updateNoiseTypeTo(Rule rule, NoiseType noiseType, boolean checked, Context context){
+        if (checked) {
+            Database db = new Database(context);
+            if (rule instanceof  WlanRule){
+                WlanRule finalWr = (WlanRule) rule;
+                finalWr.setReactionType(noiseType);
+                db.updateDBWlanRule(finalWr);
+            } else if (rule instanceof  AreaRule) {
+                AreaRule finalAr = (AreaRule) rule;
+                finalAr.setReactionType(noiseType);
+                db.updateDBAreaRule(finalAr);
+            }
+        }
     }
 
     private String getLeadingZeroString(int time) {

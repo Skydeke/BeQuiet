@@ -1,4 +1,4 @@
-package com.example.bequiet.model;
+package com.example.bequiet.model.dataclasses;
 
 public enum NoiseType {
     SILENT((byte) 0),

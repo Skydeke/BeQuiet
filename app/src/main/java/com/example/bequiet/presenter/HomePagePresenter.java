@@ -3,12 +3,8 @@ package com.example.bequiet.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.room.Room;
-
-import com.example.bequiet.model.AppDatabase;
-import com.example.bequiet.model.dataclasses.AreaRule;
+import com.example.bequiet.model.database.Database;
 import com.example.bequiet.model.dataclasses.Rule;
-import com.example.bequiet.model.dataclasses.WlanRule;
 
 import java.util.List;
 
@@ -20,28 +16,16 @@ public class HomePagePresenter {
         this.viewInterface = viewInterface;
     }
 
-    public void updateRules(List<Rule> rules, Context context) {
-
-        Thread thread = new Thread(() -> {
-            AppDatabase db = Room.databaseBuilder(context,
-                    AppDatabase.class, "rules").build();
-
-            List<WlanRule> wlanRules = db.ruleDAO().loadAllWlanRules();
-            List<AreaRule> areaRules = db.ruleDAO().loadAllAreaRules();
-            rules.addAll(wlanRules);
-            rules.addAll(areaRules);
-
+    public void getRulesAndDraw(Context context) {
+        Database database = new Database(context);
+        database.getAllRulesInCallback(rules -> {
             viewInterface.setEmptyListTextShown(rules.size() == 0);
-            db.close();
-            Log.i("database", db.ruleDAO().loadAllAreaRules().toString());
-            viewInterface.updateRules(rules);
+            viewInterface.redrawRules(rules);
         });
-
-        thread.start();
     }
 
     public interface ViewInterface {
-        public void updateRules(List<Rule> r);
+        public void redrawRules(List<Rule> r);
 
         public void setEmptyListTextShown(boolean shown);
     }

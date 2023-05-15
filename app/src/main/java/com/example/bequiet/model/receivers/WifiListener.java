@@ -7,11 +7,10 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-import androidx.room.Room;
-
-import com.example.bequiet.model.AppDatabase;
 import com.example.bequiet.model.RuleTimer;
 import com.example.bequiet.model.VolumeManager;
+import com.example.bequiet.model.database.Database;
+import com.example.bequiet.model.database.WlanRuleListCallback;
 import com.example.bequiet.model.dataclasses.WlanRule;
 
 import java.util.List;
@@ -40,30 +39,15 @@ public class WifiListener extends BrodcastReceiver {
     }
 
     private void checkRules(Context context, String ssid) {
-        Thread thread = new Thread(() -> {
-            AppDatabase db = Room.databaseBuilder(context,
-                    AppDatabase.class, "rules").build();
-
-            List<WlanRule> wlanRules = db.ruleDAO().loadAllWlanRules();
-            Log.d(TAG, "Rules: " + wlanRules.size());
+        VolumeManager volumeManager = new VolumeManager(context);
+        Database database = new Database(context);
+        database.getWlanRulesInCallback(wlanRules -> {
             for (WlanRule wlanRule : wlanRules) {
                 if (wlanRule.getWlanName().equals(ssid)) {
                     if (wlanRule.isActive()) {
-                        switch (wlanRule.getReactionType()) {
-                            case SILENT:
-                                VolumeManager.getInstance().muteDevice(context);
-                                Log.d(TAG, "Muted device.");
-                                break;
-                            case VIBRATE:
-                                VolumeManager.getInstance().turnVibrationOn(context);
-                                Log.d(TAG, "Device vibrating.");
-                                break;
-                            case NOISE:
-                                VolumeManager.getInstance().turnNoiseOn(context);
-                                Log.d(TAG, "Device making noise.");
-                        }
+                        volumeManager.actOnNoiseAction(wlanRule.getReactionType());
                         RuleTimer.getInstance().startTimer(wlanRule.getDurationEnd(), () -> {
-                            VolumeManager.getInstance().turnNoiseOn(context);
+                            volumeManager.turnNoiseOn();
                             Log.d(TAG, "Reset Volume in Handler.");
                             RuleTimer.getInstance().startTimer(wlanRule.getDurationStart(), () -> {
                                 checkRules(context, ssid);
@@ -72,22 +56,10 @@ public class WifiListener extends BrodcastReceiver {
                         });
 
                     } else {
-                        VolumeManager.getInstance().turnNoiseOn(context);
+                        volumeManager.turnNoiseOn();
                         Log.d(TAG, "Reset Volume in Handler.");
                         RuleTimer.getInstance().startTimer(wlanRule.getDurationStart(), () -> {
-                            switch (wlanRule.getReactionType()) {
-                                case SILENT:
-                                    VolumeManager.getInstance().muteDevice(context);
-                                    Log.d(TAG, "Muted device. In Handler");
-                                    break;
-                                case VIBRATE:
-                                    VolumeManager.getInstance().turnVibrationOn(context);
-                                    Log.d(TAG, "Device vibrating. In Handler");
-                                    break;
-                                case NOISE:
-                                    VolumeManager.getInstance().turnNoiseOn(context);
-                                    Log.d(TAG, "Device making noise. In Handler");
-                            }
+                            volumeManager.actOnNoiseAction(wlanRule.getReactionType());
                             RuleTimer.getInstance().startTimer(wlanRule.getDurationEnd(), () -> {
                                 checkRules(context, ssid);
                             });
@@ -95,9 +67,7 @@ public class WifiListener extends BrodcastReceiver {
                     }
                 }
             }
-            db.close();
         });
-        thread.start();
     }
 
 }

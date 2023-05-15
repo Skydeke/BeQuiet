@@ -1,4 +1,4 @@
-package com.example.bequiet.view.edit;
+package com.example.bequiet.view.fragments;
 
 import android.os.Bundle;
 

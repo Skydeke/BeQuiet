@@ -43,7 +43,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="com.example.bequiet.view.edit.SelectAreaFragment"
+        android:name="com.example.bequiet.view.fragments.SelectAreaFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"

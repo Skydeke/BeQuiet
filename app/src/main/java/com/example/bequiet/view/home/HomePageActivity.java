@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityHomePageBinding;
-import com.example.bequiet.model.LocationBackgroudService;
+import com.example.bequiet.model.LocationListenerRegisterer;
 import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.presenter.HomePagePresenter;
 import com.example.bequiet.view.edit.AddRuleActivity;
@@ -54,34 +54,35 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
             }
         });
         ArrayList<Rule> rules = new ArrayList<>();
-        homePagePresenter.updateRules(rules, HomePageActivity.this);
-        adapter = new RulesAdapter(rules, homePagePresenter);
+        homePagePresenter.getRulesAndDraw(HomePageActivity.this);
+        adapter = new RulesAdapter(rules);
         rulesList.setAdapter(adapter);
         rulesList.setLayoutManager(new LinearLayoutManager(this));
 
-        LocationBackgroudService.INSTANCE(getApplicationContext()); //Register LocListeners
+        LocationListenerRegisterer.INSTANCE(getApplicationContext()); //Register LocListeners
     }
 
     @Override
-    public void updateRules(List<Rule> r) {
+    public void redrawRules(List<Rule> r) {
         this.runOnUiThread(() -> {
             adapter.clearFragments();
-            adapter = new RulesAdapter(r, homePagePresenter);
+            adapter = new RulesAdapter(r);
             rulesList.setAdapter(adapter);
             rulesList.setLayoutManager(new LinearLayoutManager(this));
+            rulesList.scrollToPosition(0);
         });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        homePagePresenter.updateRules(new ArrayList<>(), getApplicationContext());
+        homePagePresenter.getRulesAndDraw(getApplicationContext());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        homePagePresenter.updateRules(new ArrayList<>(), getApplicationContext());
+        homePagePresenter.getRulesAndDraw(getApplicationContext());
     }
 
     @Override

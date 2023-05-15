@@ -1,4 +1,4 @@
-package com.example.bequiet.view.home;
+package com.example.bequiet.view.fragments;
 
 import android.os.Bundle;
 
