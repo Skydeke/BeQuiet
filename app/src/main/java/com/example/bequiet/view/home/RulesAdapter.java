@@ -1,9 +1,13 @@
 package com.example.bequiet.view.home;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.nfc.Tag;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +22,7 @@ import com.example.bequiet.model.dataclasses.AreaRule;
 import com.example.bequiet.model.dataclasses.NoiseType;
 import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.model.dataclasses.WlanRule;
+import com.example.bequiet.presenter.HomePagePresenter;
 import com.example.bequiet.view.fragments.SelectAreaFragment;
 import com.example.bequiet.view.fragments.WlanRuleFragment;
 
@@ -33,9 +38,12 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final List<Rule> localDataSet;
     private final HashMap<Integer, Fragment> localFrags;
 
-    public RulesAdapter(List<Rule> dataSet) {
+    private final HomePagePresenter homePagePresenter;
+
+    public RulesAdapter(List<Rule> dataSet, HomePagePresenter homePagePresenter) {
         localDataSet = dataSet;
         localFrags = new HashMap<>();
+        this.homePagePresenter = homePagePresenter;
     }
 
     // Create new views (invoked by the layout manager)
@@ -69,6 +77,25 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
         AreaRule ar;
         Resources res = viewHolder.getView().getResources();
         viewHolder.setDataPos(position);
+        viewHolder.getView().setOnLongClickListener(view -> {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle(rule.getRuleName());
+            builder.setMessage("Wollen sie diese Regeln wircklich löschen?");
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                if (rule instanceof WlanRule) {
+                    new Database(view.getContext().getApplicationContext()).deleteWifiRule((WlanRule) rule, homePagePresenter);
+                } else {
+                    new Database(view.getContext().getApplicationContext()).deleteAreaRule((AreaRule) rule, homePagePresenter);
+                }
+            });
+            builder.setNegativeButton("Abbrechen", (dialog, which) -> {
+
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return false;
+        });
 
         if (rule instanceof WlanRule) {
             wr = (WlanRule) rule;
@@ -131,14 +158,14 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
         viewHolder.getRadioButtonNoise().setOnCheckedChangeListener((compoundButton, b) -> updateNoiseTypeTo(rule, NoiseType.NOISE, b, viewHolder.getContext()));
     }
 
-    private void updateNoiseTypeTo(Rule rule, NoiseType noiseType, boolean checked, Context context){
+    private void updateNoiseTypeTo(Rule rule, NoiseType noiseType, boolean checked, Context context) {
         if (checked) {
             Database db = new Database(context);
-            if (rule instanceof  WlanRule){
+            if (rule instanceof WlanRule) {
                 WlanRule finalWr = (WlanRule) rule;
                 finalWr.setReactionType(noiseType);
                 db.updateDBWlanRule(finalWr);
-            } else if (rule instanceof  AreaRule) {
+            } else if (rule instanceof AreaRule) {
                 AreaRule finalAr = (AreaRule) rule;
                 finalAr.setReactionType(noiseType);
                 db.updateDBAreaRule(finalAr);
@@ -157,6 +184,10 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public int getItemCount() {
         return localDataSet.size();
+    }
+
+    public List<Rule> getLocalDataSet() {
+        return localDataSet;
     }
 }
 

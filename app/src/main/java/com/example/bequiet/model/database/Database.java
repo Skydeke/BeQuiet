@@ -7,6 +7,7 @@ import androidx.room.Room;
 import com.example.bequiet.model.dataclasses.AreaRule;
 import com.example.bequiet.model.dataclasses.Rule;
 import com.example.bequiet.model.dataclasses.WlanRule;
+import com.example.bequiet.presenter.HomePagePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,24 @@ public class Database {
         Thread thread = new Thread(() -> {
             dbRef.ruleDAO().updateWlanRule(w);
             dbRef.close();
+        });
+        thread.start();
+    }
+
+    public void deleteWifiRule(WlanRule wlanRule, HomePagePresenter homePagePresenter) {
+        Thread thread = new Thread(() -> {
+            dbRef.ruleDAO().deleteWlanRule(wlanRule);
+            dbRef.close();
+            homePagePresenter.getRulesAndDraw(context);
+        });
+        thread.start();
+    }
+
+    public void deleteAreaRule(AreaRule areaRule, HomePagePresenter homePagePresenter) {
+        Thread thread = new Thread(() -> {
+            dbRef.ruleDAO().deleteAreaRule(areaRule);
+            dbRef.close();
+            homePagePresenter.getRulesAndDraw(context);
         });
         thread.start();
     }

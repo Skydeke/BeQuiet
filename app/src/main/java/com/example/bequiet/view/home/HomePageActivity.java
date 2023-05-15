@@ -40,7 +40,6 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
         setSupportActionBar(binding.toolbar);
 
 
-
         emptyListHint = findViewById(R.id.textViewNoRulesCreated);
         rulesList = findViewById(R.id.rulesList);
 
@@ -50,7 +49,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
         });
         ArrayList<Rule> rules = new ArrayList<>();
         homePagePresenter.getRulesAndDraw(HomePageActivity.this);
-        adapter = new RulesAdapter(rules);
+        adapter = new RulesAdapter(rules, homePagePresenter);
         rulesList.setAdapter(adapter);
         rulesList.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -59,7 +58,7 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
     public void redrawRules(List<Rule> r) {
         this.runOnUiThread(() -> {
             adapter.clearFragments();
-            adapter = new RulesAdapter(r);
+            adapter = new RulesAdapter(r, homePagePresenter);
             rulesList.setAdapter(adapter);
             rulesList.setLayoutManager(new LinearLayoutManager(this));
             rulesList.scrollToPosition(0);
@@ -80,10 +79,12 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
 
     @Override
     public void setEmptyListTextShown(boolean shown) {
-        if (shown) {
-            emptyListHint.setVisibility(View.VISIBLE);
-        } else {
-            emptyListHint.setVisibility(View.INVISIBLE);
-        }
+        this.runOnUiThread(() -> {
+            if (shown) {
+                emptyListHint.setVisibility(View.VISIBLE);
+            } else {
+                emptyListHint.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 }
