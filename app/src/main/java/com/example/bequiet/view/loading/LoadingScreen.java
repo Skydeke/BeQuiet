@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.bequiet.R;
+import com.example.bequiet.model.LocationListenerRegisterer;
 import com.example.bequiet.model.receivers.WifiListener;
 import com.example.bequiet.view.home.HomePageActivity;
 
@@ -46,6 +47,7 @@ public class LoadingScreen extends AppCompatActivity {
         filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         WifiListener wifiListener = new WifiListener();
         getApplicationContext().registerReceiver(wifiListener, filter);
+        LocationListenerRegisterer.INSTANCE(getApplicationContext()); //Register LocListeners
         Log.i("Perms", "Hello App.: ");
         checkDoNotDisturbPermission();
         checkBackgroundLocationPermission();
