@@ -53,8 +53,6 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
         adapter = new RulesAdapter(rules);
         rulesList.setAdapter(adapter);
         rulesList.setLayoutManager(new LinearLayoutManager(this));
-
-        LocationListenerRegisterer.INSTANCE(getApplicationContext()); //Register LocListeners
     }
 
     @Override
