@@ -2,9 +2,10 @@ package com.example.bequiet.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+
+import com.example.bequiet.R;
 
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Overlay;
@@ -33,7 +34,7 @@ public class CircleOverlay extends Overlay {
         this.referenceScale = referenceScale;
         // Set up the paint for drawing the circle
         this.paint = new Paint();
-        this.paint.setColor(Color.RED);
+        this.paint.setColor(context.getResources().getColor(R.color.blue_gray_600));
         this.paint.setStyle(Paint.Style.STROKE);
         this.paint.setStrokeWidth(5);
 

@@ -103,7 +103,7 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
             }
         }
 
-        view.setBackgroundColor(Color.parseColor("#cc0066"));
+        view.setBackgroundColor(getResources().getColor(R.color.blue_gray_600));
     }
 
     public interface WifiSelectedListener {
