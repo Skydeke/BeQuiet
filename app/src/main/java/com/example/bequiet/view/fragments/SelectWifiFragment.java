@@ -19,9 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bequiet.R;
+import com.example.bequiet.model.dataclasses.SelectableString;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -31,9 +35,10 @@ import java.util.stream.Collectors;
  * Use the {@link SelectWifiFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SelectWifiFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class SelectWifiFragment extends Fragment {
 
     private WifiSelectedListener wifiSelectedListener;
+    private SelectableStringAdapter adapter;
 
     public SelectWifiFragment() {
         // Required empty public constructor
@@ -57,14 +62,28 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_select_wifi, container, false);
-        ListView listView = view.findViewById(R.id.list_view_wifi);
-        List<String> wifis = Objects.requireNonNull(getAvailableWifiNetworks()).stream().map(x -> x.SSID).collect(Collectors.toList());
+        RecyclerView recyclerView = view.findViewById(R.id.list_view_wifi);
+        List<SelectableString> wifis = new ArrayList<>();
+        for (String ssid : Objects.requireNonNull(getAvailableWifiNetworks()).stream().map(x -> x.SSID).collect(Collectors.toList())) {
+            wifis.add(new SelectableString(ssid, false));
+        }
+
+
         //add test wifis to list more
-        wifis.add("Test1");
-        wifis.add("Test2");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, wifis);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
+        wifis.add(new SelectableString("Test1", false));
+        wifis.add(new SelectableString("Test2", false));
+        wifis.add(new SelectableString("Test3", false));
+        wifis.add(new SelectableString("Test4", false));
+        wifis.add(new SelectableString("Test5", false));
+        wifis.add(new SelectableString("Test6", false));
+        wifis.add(new SelectableString("Test7", false));
+        wifis.add(new SelectableString("Test8", false));
+        wifis.add(new SelectableString("Test9", false));
+        wifis.add(new SelectableString("Test10", false));
+        wifis.add(new SelectableString("Test11", false));
+        adapter = new SelectableStringAdapter(getContext(), wifis, wifiSelectedListener);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
     }
 
@@ -88,22 +107,6 @@ public class SelectWifiFragment extends Fragment implements AdapterView.OnItemCl
         List<ScanResult> wifiList = wifiManager.getScanResults();
         Log.i("Wifi", wifiList.toString());
         return wifiList;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        String selectedWifi = (String) adapterView.getItemAtPosition(position);
-        this.wifiSelectedListener.onWifiSelected(selectedWifi);
-
-        // Set background color of other items to white
-        for (int i = 0; i < adapterView.getChildCount(); i++) {
-            if (i != position) {
-                View child = adapterView.getChildAt(i);
-                child.setBackgroundColor(Color.WHITE);
-            }
-        }
-
-        view.setBackgroundColor(getResources().getColor(R.color.blue_gray_600));
     }
 
     public interface WifiSelectedListener {
