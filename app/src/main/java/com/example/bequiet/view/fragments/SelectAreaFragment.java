@@ -1,5 +1,11 @@
 package com.example.bequiet.view.fragments;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +14,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.bequiet.R;
@@ -100,8 +107,18 @@ public class SelectAreaFragment extends Fragment implements MapListener {
         if (disableControlls) {
             // Disable all touch interaction
             map.setOnTouchListener((v, event) -> true);
+        } else {
+            // we are in selection mode
+            // set the location to the last known gps location to make selection easier
+            LocationManager locationManager = (LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE);
+            if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (lastKnownLocation != null) {
+                    this.lat = lastKnownLocation.getLatitude();
+                    this.lon = lastKnownLocation.getLongitude();
+                }
+            }
         }
-
 
         mCircleOverlay = new CircleOverlay(
                 map.getContext(),
