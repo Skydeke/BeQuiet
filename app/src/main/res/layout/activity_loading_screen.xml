@@ -11,11 +11,11 @@
         android:id="@+id/imageView"
         android:layout_width="264dp"
         android:layout_height="331dp"
+        android:contentDescription="@string/LoadingScreenContDesc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_loadingscreen_foreground"
-        android:contentDescription="LoadingScreenImage" />
+        app:srcCompat="@mipmap/ic_loadingscreen_foreground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

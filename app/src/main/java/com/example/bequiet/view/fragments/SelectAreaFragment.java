@@ -1,7 +1,6 @@
 package com.example.bequiet.view.fragments;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -32,8 +31,6 @@ import org.osmdroid.views.MapView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SelectAreaFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class SelectAreaFragment extends Fragment implements MapListener {
 
@@ -67,18 +64,6 @@ public class SelectAreaFragment extends Fragment implements MapListener {
 
     private GPSCoordinateSelectedListener gpsCoordinateSelectedListener;
 
-    public static SelectAreaFragment newInstance(double lat, double longitude, int radius, int zoom, boolean disableControlls) {
-        SelectAreaFragment fragment = new SelectAreaFragment();
-        Bundle args = new Bundle();
-        args.putDouble(KEY_LATITUDE, lat);
-        args.putDouble(KEY_LONGITUDE, longitude);
-        args.putInt(KEY_ZOOM, zoom);
-        args.putFloat(KEY_RADIUS, radius);
-        args.putBoolean(KEY_DISABLE_MOVEMENT, disableControlls);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +83,8 @@ public class SelectAreaFragment extends Fragment implements MapListener {
         return inflater.inflate(R.layout.fragment_select_area, container, false);
     }
 
+    // It is intentional that we ignore Clicks here!
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         map = (MapView) view.findViewById(R.id.mapview);
@@ -120,12 +107,11 @@ public class SelectAreaFragment extends Fragment implements MapListener {
             }
         }
 
+
         mCircleOverlay = new CircleOverlay(
                 map.getContext(),
-                radius, map.getProjection().metersToPixels(radius, lat, zoom),
-                map.getProjection().metersToPixels(1, lat, zoom),
-                lat,
-                lon);
+                map.getProjection().metersToPixels(radius, lat, zoom),
+                map.getProjection().metersToPixels(1, lat, zoom));
         map.getOverlayManager().add(mCircleOverlay);
         map.addMapListener(this);
 

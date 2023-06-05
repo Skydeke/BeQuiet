@@ -1,6 +1,5 @@
 package com.example.bequiet.view.loading;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LoadingScreen extends AppCompatActivity {
-    private final int PERMISSION_REQUEST_CODE = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +67,9 @@ public class LoadingScreen extends AppCompatActivity {
 
         if (!permissionsNeeded.isEmpty()) {
             Log.i("Perms", "Requesting: " + Arrays.toString(permissionsNeeded.toArray()));
+            int PERMISSION_REQUEST_CODE = 123;
             ActivityCompat.requestPermissions(this,
-                    permissionsNeeded.toArray(new String[permissionsNeeded.size()]),
+                    permissionsNeeded.toArray(new String[0]),
                     PERMISSION_REQUEST_CODE);
         } else {
             goToHomeActivity();
@@ -106,7 +105,7 @@ public class LoadingScreen extends AppCompatActivity {
             ActivityResultLauncher<Intent> locationLauncher = registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
-                        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                        if (result.getResultCode() == PackageManager.PERMISSION_GRANTED) {
                             checkAndRequestPermissions();
                         } else {
                             Toast.makeText(this, "We need the background location to work properly", Toast.LENGTH_LONG).show();

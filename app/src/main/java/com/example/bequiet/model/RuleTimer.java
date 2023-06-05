@@ -5,13 +5,11 @@ import android.os.HandlerThread;
 
 public class RuleTimer {
     private static RuleTimer instance = null;
-    private Handler handler;
+    private final Handler handler;
     private Runnable runnable;
 
-    private HandlerThread handlerThread;
-
     private RuleTimer() {
-        handlerThread = new HandlerThread("RuleTimerThread");
+        HandlerThread handlerThread = new HandlerThread("RuleTimerThread");
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper());
     }

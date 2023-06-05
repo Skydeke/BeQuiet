@@ -12,7 +12,7 @@ public class LocationListener implements android.location.LocationListener {
     private static final String TAG = "LocationListener";
 
     private final Location lastLocation;
-    Context context;
+    final Context context;
 
     public LocationListener(String provider, Context c) {
         Log.i(TAG, "LocationListener " + provider);

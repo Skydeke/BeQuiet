@@ -17,7 +17,4 @@ public class WlanRule extends Rule{
         return wlanName;
     }
 
-    public void setWlanName(String wlanName) {
-        this.wlanName = wlanName;
-    }
 }

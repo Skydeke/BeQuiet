@@ -13,23 +13,14 @@ import org.osmdroid.views.overlay.Overlay;
 public class CircleOverlay extends Overlay {
 
 
-    private float radius;
-
-    private double longitude;
-
-    private double latitute;
-
     private final Paint paint;
 
     private float referenceScale;
 
     private final float radiusPx;
 
-    public CircleOverlay(Context context, float radius, float radiusPx, float referenceScale, double latitude, double longitude) {
+    public CircleOverlay(Context context, float radiusPx, float referenceScale) {
         super(context);
-        this.radius = radius;
-        this.latitute = latitude;
-        this.longitude = longitude;
         this.radiusPx = radiusPx;
         this.referenceScale = referenceScale;
         // Set up the paint for drawing the circle

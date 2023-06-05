@@ -65,6 +65,7 @@
         android:layout_height="32dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="12dp"
+        android:contentDescription="@string/TimeIconDesc"
         app:layout_constraintStart_toEndOf="@+id/textViewAkiveFrom"
         app:layout_constraintTop_toBottomOf="@+id/textViewRuleTitle"
         app:srcCompat="@mipmap/ic_time_foreground" />
@@ -73,6 +74,7 @@
         android:id="@+id/imageView4"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:contentDescription="@string/TimeIconDesc"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@mipmap/ic_time_foreground" />
@@ -82,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="00:00"
+        android:text="@string/Time_Zero_Placeholder"
         app:layout_constraintBottom_toBottomOf="@+id/textViewAkiveFrom"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toTopOf="@+id/textViewAkiveFrom" />
@@ -92,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="00:00"
+        android:text="@string/Time_Zero_Placeholder"
         app:layout_constraintBottom_toBottomOf="@+id/textViewAktiveUntil"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="@+id/textViewAktiveUntil" />

@@ -15,10 +15,10 @@ import java.util.List;
 public interface RuleDAO {
 
     @Query("SELECT * FROM WLANRULE")
-    public List<WlanRule> loadAllWlanRules();
+    List<WlanRule> loadAllWlanRules();
 
     @Query("SELECT * FROM AreaRule")
-    public List<AreaRule> loadAllAreaRules();
+    List<AreaRule> loadAllAreaRules();
 
     @Insert
     void insertWlanRule(WlanRule wlanRule);

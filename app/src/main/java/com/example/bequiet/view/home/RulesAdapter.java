@@ -3,11 +3,8 @@ package com.example.bequiet.view.home;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.nfc.Tag;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +73,6 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
         WlanRule wr;
         AreaRule ar;
         Resources res = viewHolder.getView().getResources();
-        viewHolder.setDataPos(position);
         viewHolder.getView().setOnLongClickListener(view -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -186,8 +182,5 @@ public class RulesAdapter extends RecyclerView.Adapter<ViewHolder> {
         return localDataSet.size();
     }
 
-    public List<Rule> getLocalDataSet() {
-        return localDataSet;
-    }
 }
 

@@ -15,8 +15,6 @@ import com.example.bequiet.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link WlanRuleFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class WlanRuleFragment extends Fragment {
 
@@ -30,21 +28,6 @@ public class WlanRuleFragment extends Fragment {
 
     public WlanRuleFragment(String name) {
         this.name = name;
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment WlanRuleFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static WlanRuleFragment newInstance(String wlanName) {
-        WlanRuleFragment fragment = new WlanRuleFragment();
-        Bundle args = new Bundle();
-        args.putString(WLAN_NAME_KEY, wlanName);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override

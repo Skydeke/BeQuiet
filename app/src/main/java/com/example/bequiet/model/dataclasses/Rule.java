@@ -44,40 +44,20 @@ public abstract class Rule {
         return ruleName;
     }
 
-    public void setRuleName(String ruleName) {
-        this.ruleName = ruleName;
-    }
-
     public int getStartHour() {
         return startHour;
-    }
-
-    public void setStartHour(int startHour) {
-        this.startHour = startHour;
     }
 
     public int getStartMinute() {
         return startMinute;
     }
 
-    public void setStartMinute(int startMinute) {
-        this.startMinute = startMinute;
-    }
-
     public int getEndHour() {
         return endHour;
     }
 
-    public void setEndHour(int endHour) {
-        this.endHour = endHour;
-    }
-
     public int getEndMinute() {
         return endMinute;
-    }
-
-    public void setEndMinute(int endMinute) {
-        this.endMinute = endMinute;
     }
 
     public int getId() {
@@ -130,9 +110,7 @@ public abstract class Rule {
             end.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        long duration = end.getTimeInMillis() - start.getTimeInMillis();
-
-        return duration;
+        return end.getTimeInMillis() - start.getTimeInMillis();
     }
 
     public long getDurationStart() {
@@ -153,9 +131,7 @@ public abstract class Rule {
             start.add(Calendar.DAY_OF_YEAR, 1);
         }
 
-        long duration = start.getTimeInMillis() - now.getTimeInMillis();
-
-        return duration;
+        return start.getTimeInMillis() - now.getTimeInMillis();
     }
 
 }

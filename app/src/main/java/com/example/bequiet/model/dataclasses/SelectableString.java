@@ -3,7 +3,7 @@ package com.example.bequiet.model.dataclasses;
 public class SelectableString {
 
     private String data;
-    private boolean selected = false;
+    private boolean selected;
 
     public SelectableString(String data, boolean selected) {
         this.data = data;
@@ -12,10 +12,6 @@ public class SelectableString {
 
     public String getData() {
         return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 
     public boolean isSelected() {

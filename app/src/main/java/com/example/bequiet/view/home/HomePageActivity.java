@@ -1,7 +1,6 @@
 package com.example.bequiet.view.home;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -24,7 +23,6 @@ import java.util.List;
 
 public class HomePageActivity extends AppCompatActivity implements HomePagePresenter.ViewInterface {
 
-    private ActivityHomePageBinding binding;
     private HomePagePresenter homePagePresenter;
 
     private TextView emptyListHint;
@@ -38,14 +36,12 @@ public class HomePageActivity extends AppCompatActivity implements HomePagePrese
         super.onCreate(savedInstanceState);
 
         // Set the color of the status bar
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.blue_gray_600));
-        }
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.blue_gray_600));
 
         homePagePresenter = new HomePagePresenter(this);
-        binding = ActivityHomePageBinding.inflate(getLayoutInflater());
+        com.example.bequiet.databinding.ActivityHomePageBinding binding = ActivityHomePageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 

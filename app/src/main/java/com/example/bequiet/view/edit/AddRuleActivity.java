@@ -1,7 +1,6 @@
 package com.example.bequiet.view.edit;
 
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -14,10 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.ui.AppBarConfiguration;
 
 import com.example.bequiet.R;
 import com.example.bequiet.databinding.ActivityAddRuleBinding;
@@ -34,7 +31,6 @@ import java.util.Calendar;
 
 public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateSelectedListener, SelectWifiFragment.WifiSelectedListener {
 
-    private ActivityAddRuleBinding binding;
     private String ruleName = "";
 
     private int startHour = -1;
@@ -60,12 +56,12 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityAddRuleBinding.inflate(getLayoutInflater());
+        com.example.bequiet.databinding.ActivityAddRuleBinding binding = ActivityAddRuleBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Spinner typesSpinner = (Spinner) findViewById(R.id.spinnerRuleTypes);
         String[] types = getResources().getStringArray(R.array.ruletypes);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, types);
         typesSpinner.setAdapter(adapter);
 
         EditText editTextRulename = findViewById(R.id.editTextRulename);
@@ -87,64 +83,41 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
 
         EditText editTextStartDate = findViewById(R.id.editTextStartDate);
         editTextStartDate.setShowSoftInputOnFocus(false);
-        editTextStartDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    final Calendar calendar = Calendar.getInstance();
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            editTextStartDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute));
-                            startHour = hourOfDay;
-                            startMinute = minute;
-                            editTextStartDate.clearFocus();
-                            changeButtonState();
-                        }
-                    }, hour, minute, true);
+        editTextStartDate.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                final Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, (view, hourOfDay, minute1) -> {
+                    editTextStartDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute1));
+                    startHour = hourOfDay;
+                    startMinute = minute1;
+                    editTextStartDate.clearFocus();
+                    changeButtonState();
+                }, hour, minute, true);
 
-                    timePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            editTextStartDate.clearFocus();
-                        }
-                    });
+                timePickerDialog.setOnCancelListener(dialog -> editTextStartDate.clearFocus());
 
-                    timePickerDialog.show();
-                }
+                timePickerDialog.show();
             }
         });
 
         EditText editTextEndDate = findViewById(R.id.editTextEndDate);
         editTextEndDate.setShowSoftInputOnFocus(false);
-        editTextEndDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    final Calendar calendar = Calendar.getInstance();
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                            editTextEndDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute));
-                            endHour = hourOfDay;
-                            endMinute = minute;
-                            editTextEndDate.clearFocus();
-                            changeButtonState();
-                        }
-
-                    }, hour, minute, true);
-                    timePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            editTextEndDate.clearFocus();
-                        }
-                    });
-                    timePickerDialog.show();
-                }
+        editTextEndDate.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                final Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, (view, hourOfDay, minute12) -> {
+                    editTextEndDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute12));
+                    endHour = hourOfDay;
+                    endMinute = minute12;
+                    editTextEndDate.clearFocus();
+                    changeButtonState();
+                }, hour, minute, true);
+                timePickerDialog.setOnCancelListener(dialog -> editTextEndDate.clearFocus());
+                timePickerDialog.show();
             }
         });
         typesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

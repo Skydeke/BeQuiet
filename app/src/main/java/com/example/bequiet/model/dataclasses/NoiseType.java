@@ -1,13 +1,10 @@
 package com.example.bequiet.model.dataclasses;
 
 public enum NoiseType {
-    SILENT((byte) 0),
-    VIBRATE((byte) 1),
-    NOISE((byte) 2);
+    SILENT(),
+    VIBRATE(),
+    NOISE();
 
-    private byte state;
-
-    NoiseType(byte i){
-        state = i;
+    NoiseType(){
     }
 }

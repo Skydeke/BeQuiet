@@ -3,7 +3,6 @@ package com.example.bequiet.view.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -11,9 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,24 +28,13 @@ import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link SelectWifiFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class SelectWifiFragment extends Fragment {
 
     private WifiSelectedListener wifiSelectedListener;
-    private SelectableStringAdapter adapter;
 
     public SelectWifiFragment() {
         // Required empty public constructor
-    }
-
-
-    public static SelectWifiFragment newInstance() {
-        SelectWifiFragment fragment = new SelectWifiFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -68,7 +53,7 @@ public class SelectWifiFragment extends Fragment {
             wifis.add(new SelectableString(ssid, false));
         }
 
-        adapter = new SelectableStringAdapter(getContext(), wifis, wifiSelectedListener);
+        SelectableStringAdapter adapter = new SelectableStringAdapter(getContext(), wifis, wifiSelectedListener);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         return view;
@@ -88,7 +73,7 @@ public class SelectWifiFragment extends Fragment {
         if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //get permission for Wifi-Access
-            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{android.Manifest.permission.ACCESS_WIFI_STATE, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+            ActivityCompat.requestPermissions((Activity) requireContext(), new String[]{android.Manifest.permission.ACCESS_WIFI_STATE, android.Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
             return null;
         }
         List<ScanResult> wifiList = wifiManager.getScanResults();

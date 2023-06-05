@@ -29,6 +29,11 @@
     <string name="wlan_rule">%1$s - WLAN-Regel</string>
     <string name="area_rule">%1$s - Area-Regel</string>
     <string name="time_string">%1$s:%2$s</string>
+    <string name="LoadingScreenContDesc">LoadingScreenIcon</string>
+    <string name="WlanNameContDesc">Wlan-Name</string>
+    <string name="WlanContDesc">WlanIcon</string>
+    <string name="Time_Zero_Placeholder">00:00</string>
+    <string name="TimeIconDesc">TimeIcon</string>
     <array name="ruletypes">
         <item>Area-Regel</item>
         <item>WLAN-Regel</item>

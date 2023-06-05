@@ -1,8 +1,8 @@
 package com.example.bequiet.view.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class SelectableStringAdapter extends RecyclerView.Adapter<WlanViewHolder> {
 
-    private Context mContext;
+    private final Context mContext;
 
-    private List<SelectableString> items;
+    private final List<SelectableString> items;
 
-    private SelectWifiFragment.WifiSelectedListener wifiSelectedListener;
+    private final SelectWifiFragment.WifiSelectedListener wifiSelectedListener;
 
     public SelectableStringAdapter(Context context, List<SelectableString> items, SelectWifiFragment.WifiSelectedListener wifiSelectedListener) {
         this.mContext = context;
@@ -32,13 +32,13 @@ public class SelectableStringAdapter extends RecyclerView.Adapter<WlanViewHolder
     @NonNull
     @Override
     public WlanViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         // Create a new view, which defines the UI of the list item
         View view = inflater.inflate(R.layout.selectable_string, parent, false);
-        return new WlanViewHolder(view, context);
+        return new WlanViewHolder(view);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull WlanViewHolder holder, int position) {
 

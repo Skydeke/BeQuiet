@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bequiet.R;
 
+import java.util.Objects;
+
 /**
  * Provide a reference to the type of views that you are using
  * (custom ViewHolder)
@@ -25,11 +27,9 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     private final RadioButton radioButtonSilence;
     private final RadioButton radioButtonVibrate;
     private final RadioButton radioButtonNoise;
-    private final RadioGroup radioGroupAction;
     private final FrameLayout fragmentRule;
     private final View view;
     private final Context context;
-    private int dataPos = -1;
 
     public ViewHolder(View view, Context context) {
         super(view);
@@ -42,7 +42,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         textViewRuleTitle = (TextView) view.findViewById(R.id.textViewRuleTitle);
         textViewStart = (TextView) view.findViewById(R.id.textViewStartTime);
         textViewEnd = (TextView) view.findViewById(R.id.textViewEndTime);
-        radioGroupAction = (RadioGroup) view.findViewById(R.id.radioGroupAction);
         radioButtonSilence = (RadioButton) view.findViewById(R.id.radioButtonSilence);
         radioButtonVibrate = (RadioButton) view.findViewById(R.id.radioButtonVibrate);
         radioButtonNoise = (RadioButton) view.findViewById(R.id.radioButtonFullVolume);
@@ -50,22 +49,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public Context getContext() {
         return context;
-    }
-
-    public RadioGroup getRadioGroupAction() {
-        return radioGroupAction;
-    }
-
-    public int getDataPos() {
-        return dataPos;
-    }
-
-    public void setDataPos(int dataPos) {
-        this.dataPos = dataPos;
-    }
-
-    public FrameLayout getFragmentRule() {
-        return fragmentRule;
     }
 
     public RadioButton getRadioButtonSilence() {
@@ -98,7 +81,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public void setFrag(Fragment fragment) {
         View v = fragment.onCreateView(LayoutInflater.from(context), fragmentRule, null);
-        fragment.onViewCreated(v,  null);
+        fragment.onViewCreated(Objects.requireNonNull(v),  null);
         fragmentRule.addView(v);
     }
 }

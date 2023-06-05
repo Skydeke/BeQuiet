@@ -13,11 +13,10 @@ public class LocationListenerRegisterer {
 
     private static LocationListenerRegisterer INSTANCE = null;
 
-    public static LocationListenerRegisterer INSTANCE(Context c) {
+    public static void INSTANCE(Context c) {
         if (INSTANCE == null) {
             INSTANCE = new LocationListenerRegisterer(c);
         }
-        return INSTANCE;
     }
 
     private final LocationListener[] mLocationListeners;
@@ -49,18 +48,6 @@ public class LocationListenerRegisterer {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-        }
-    }
-
-    public void removeListeners() {
-        if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
-                try {
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
-                } catch (Exception ex) {
-                    Log.i(TAG, "fail to remove location listners, ignore", ex);
-                }
-            }
         }
     }
 
