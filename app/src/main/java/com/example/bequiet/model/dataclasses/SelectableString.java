@@ -2,7 +2,7 @@ package com.example.bequiet.model.dataclasses;
 
 public class SelectableString {
 
-    private String data;
+    private final String data;
     private boolean selected;
 
     public SelectableString(String data, boolean selected) {

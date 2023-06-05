@@ -6,7 +6,7 @@ import androidx.room.Entity;
 @Entity
 public class WlanRule extends Rule{
     @ColumnInfo(name = "wlanName")
-    private String wlanName;
+    private final String wlanName;
 
     public WlanRule(String ruleName, int startHour, int startMinute, int endHour, int endMinute, String wlanName) {
         super(ruleName, startHour, startMinute, endHour, endMinute);

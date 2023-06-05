@@ -8,7 +8,6 @@
     tools:context=".view.loading.LoadingScreen">
 
     <ImageView
-        android:id="@+id/imageView"
         android:layout_width="264dp"
         android:layout_height="331dp"
         android:contentDescription="@string/LoadingScreenContDesc"

@@ -1,6 +1,7 @@
 package com.example.bequiet.view.edit;
 
 import android.app.TimePickerDialog;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -89,7 +90,9 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
                 TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, (view, hourOfDay, minute1) -> {
-                    editTextStartDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute1));
+                    Resources res = getResources();
+                    String text = String.format(res.getString(R.string.time_string), getLeadingZeroString(hourOfDay), getLeadingZeroString(minute1));
+                    editTextStartDate.setText(text);
                     startHour = hourOfDay;
                     startMinute = minute1;
                     editTextStartDate.clearFocus();
@@ -110,7 +113,9 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
                 TimePickerDialog timePickerDialog = new TimePickerDialog(AddRuleActivity.this, (view, hourOfDay, minute12) -> {
-                    editTextEndDate.setText(getLeadingZeroString(hourOfDay) + ":" + getLeadingZeroString(minute12));
+                    Resources res = getResources();
+                    String text = String.format(res.getString(R.string.time_string), getLeadingZeroString(hourOfDay), getLeadingZeroString(minute12));
+                    editTextEndDate.setText(text);
                     endHour = hourOfDay;
                     endMinute = minute12;
                     editTextEndDate.clearFocus();
@@ -167,7 +172,6 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -176,13 +180,6 @@ public class AddRuleActivity extends AppCompatActivity implements GPSCoordinateS
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

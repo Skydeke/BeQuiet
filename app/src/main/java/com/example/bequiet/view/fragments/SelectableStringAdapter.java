@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bequiet.R;
@@ -55,7 +56,7 @@ public class SelectableStringAdapter extends RecyclerView.Adapter<WlanViewHolder
         });
 
         if (p.isSelected()) {
-            holder.getDataTV().setBackgroundColor(mContext.getResources().getColor(R.color.blue_gray_600));
+            holder.getDataTV().setBackgroundColor(ContextCompat.getColor(mContext, R.color.blue_gray_600));
         } else {
             holder.getDataTV().setBackgroundColor(Color.WHITE);
         }

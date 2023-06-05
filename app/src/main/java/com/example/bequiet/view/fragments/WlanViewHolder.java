@@ -1,6 +1,5 @@
 package com.example.bequiet.view.fragments;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 

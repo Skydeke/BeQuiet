@@ -11,16 +11,16 @@ public abstract class Rule {
     @PrimaryKey(autoGenerate = true)
     private int id;
     @ColumnInfo(name = "ruleName")
-    private String ruleName;
+    private final String ruleName;
     @ColumnInfo(name = "startHour")
-    private int startHour;
+    private final int startHour;
     @ColumnInfo(name = "startMinute")
-    private int startMinute;
+    private final int startMinute;
 
     @ColumnInfo(name = "endHour")
-    private int endHour;
+    private final int endHour;
     @ColumnInfo(name = "endMinute")
-    private int endMinute;
+    private final int endMinute;
     @ColumnInfo(name = "reactionType")
     private NoiseType reactionType = NoiseType.SILENT;
 

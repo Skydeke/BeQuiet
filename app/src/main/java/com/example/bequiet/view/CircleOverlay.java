@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 
+import androidx.core.content.ContextCompat;
+
 import com.example.bequiet.R;
 
 import org.osmdroid.views.MapView;
@@ -25,7 +27,7 @@ public class CircleOverlay extends Overlay {
         this.referenceScale = referenceScale;
         // Set up the paint for drawing the circle
         this.paint = new Paint();
-        this.paint.setColor(context.getResources().getColor(R.color.blue_gray_600));
+        this.paint.setColor(ContextCompat.getColor(context, R.color.blue_gray_600));
         this.paint.setStyle(Paint.Style.STROKE);
         this.paint.setStrokeWidth(5);
 
