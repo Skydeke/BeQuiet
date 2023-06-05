@@ -68,19 +68,6 @@ public class SelectWifiFragment extends Fragment {
             wifis.add(new SelectableString(ssid, false));
         }
 
-
-        //add test wifis to list more
-        wifis.add(new SelectableString("Test1", false));
-        wifis.add(new SelectableString("Test2", false));
-        wifis.add(new SelectableString("Test3", false));
-        wifis.add(new SelectableString("Test4", false));
-        wifis.add(new SelectableString("Test5", false));
-        wifis.add(new SelectableString("Test6", false));
-        wifis.add(new SelectableString("Test7", false));
-        wifis.add(new SelectableString("Test8", false));
-        wifis.add(new SelectableString("Test9", false));
-        wifis.add(new SelectableString("Test10", false));
-        wifis.add(new SelectableString("Test11", false));
         adapter = new SelectableStringAdapter(getContext(), wifis, wifiSelectedListener);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
